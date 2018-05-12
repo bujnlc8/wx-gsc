@@ -1,0 +1,75 @@
+.operate_music{
+  height:25px;
+  width:25px;
+  margin-top:2.5px; 
+}
+
+.tab-item{
+  display: inline-block;
+  width: 2.2em;
+  margin-left: 1.2em;
+  margin-top: 15rpx;
+  font-family: 'myfont';
+  height: 1.2em;
+  line-height: 1.2em;
+}
+.active{
+  color: #BB7E7E; 
+  border-bottom: 1rpx solid #BB7E7E;
+  font-weight: 600;
+}
+.indent{
+  text-align: left;
+  text-indent: 72rpx;
+}
+.center{
+  text-align: center;
+}
+audio {
+  position: relative;
+}
+
+.free-MusicProgress {
+  position: absolute;
+  left: 2rpx;
+  right: 2rpx;
+  /* background: #c3c3c3; */
+}
+
+.free-MusicProgress>view {
+  background: #48c23d;
+  height: 2px;
+}
+
+.songci {
+  margin-left: 35rpx;
+  margin-right: 35rpx;
+}
+
+.title {
+  font-size: 40rpx;
+  text-align: center;
+  margin-top: 50rpx;
+}
+
+.title :hover{
+  background-color: #F6F6F6;
+  border-radius: 8rpx;
+}
+
+.author {
+  font-size: 35rpx;
+  text-align: center;
+  margin-top: 15rpx;
+}
+
+.content {
+  font-size: 36rpx;
+  margin-top: 15rpx;
+}
+
+.translation {
+  margin-top: 15rpx;
+  text-indent: 60rpx;
+  font-size: 32rpx;
+}

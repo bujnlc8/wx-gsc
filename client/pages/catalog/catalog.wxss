@@ -1,0 +1,36 @@
+@import "../wxSearchView/wxSearchView.wxss";
+.my_catalog{
+  min-height: 2em;
+  line-height: 2em;
+}
+.itemSongci{
+  min-height: 2.2em;
+}
+.catalog{
+  margin-left:15rpx;
+  margin-right:15rpx;
+}
+.songci{
+    margin-top: 30rpx;
+}
+.content{
+  font-size: 29rpx;
+  margin-left: 15rpx;
+}
+.title{
+  font-size: 33rpx;
+  margin-left: 15rpx;
+}
+.author{
+  font-size: 28rpx;
+  margin-right: 15rpx;
+  float: right;
+}
+.split{
+  height: 0.8rpx;
+  background-color: #D42424;
+  margin-top: 20rpx;
+  margin-left: 15rpx;
+  margin-right: 15rpx;
+  opacity: 0.2;
+}

@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/catalog/catalog",
+    "pages/songci/songci"
+  ],
+  "window": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarTitleText": "i古诗词",
+    "navigationBarTextStyle": "black",
+    "enablePullDownRefresh": true
+  }
+}
