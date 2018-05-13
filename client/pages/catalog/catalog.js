@@ -10,8 +10,27 @@ Page({
   data: {
     items: [],
     page: 'main',
-    historyplay:null,
-    showhead:true
+    historyplay: null,
+    showhead: true,
+    currentplayId: 0,
+    animationData:{}
+  },
+  getCurrentPlayId: function () {
+    var that = this
+    // 如果正在播放
+    if (that.backgroundAudioManager && !that.backgroundAudioManager.paused) {
+      var audioUrl = that.backgroundAudioManager.src
+      if (audioUrl) {
+        var re = /[0-9]+\.m4a/g
+        var results = audioUrl.match(re)
+        if (results.length > 0) {
+          results = results[0].slice(0, -4)
+          that.setData({
+            currentplayId: results
+          })
+        }
+      }
+    }
   },
   go2detail: function (e) {
     var id_ = e.target.dataset.id_
@@ -72,7 +91,7 @@ Page({
         });
         util.closeToast()
         wx.setStorage({
-          key: "songciItems"+util.formatTime(new Date()),
+          key: "songciItems" + util.formatTime(new Date()),
           data: dd
         });
       }
@@ -85,7 +104,7 @@ Page({
     var that = this
     WxSearch.init(
       that,
-      ['苏轼', '李白', "李清照", "柳永", '辛弃疾', '杜甫', '水龙吟', '青玉案', '蝶恋花'], // 热点搜索推荐
+      ['苏轼', '李白', "李清照", "柳永", '辛弃疾', '杜甫', '水龙吟', '青玉案', '蝶恋花', '与陈伯之书', '滕王阁序'], // 热点搜索推荐
       ['宋祁', '朱淑真', "吴文英", "晏几道", '秦观', '贺铸', '王安石', '李之仪', '周邦彦', '姜夔', '晏殊', '张先', '范仲淹', '晁补之', '赵佶', '宋徽宗', '张元干', '岳飞', '史达祖', '刘克庄', '蒋捷', '钱惟演', '张炎', '张孝祥', '张镃', '张抡', '青玉案', '元宵', '中秋', '蝶恋花', '满庭芳', '卜算子', '菩萨蛮', '忆江南', '浣溪沙', '诉衷情', '清平乐', '雨霖铃', '定风波', '八声甘州', '青门引', '念奴娇', '水调歌头', '洞仙歌', '渔家傲', '横塘路', '瑞龙吟', '六丑', '欧阳修', '声声慢', '永遇乐', '贺新郎', '水龙吟', '程垓', '齐天乐'],// 搜索匹配，[]表示不使用
       that.mySearchFunction, // 提供一个搜索回调函数
       that.myGobackFunction //提供一个返回回调函数
@@ -106,7 +125,7 @@ Page({
       wx.getStorage({
         key: 'songciItems' + util.formatTime(new Date()),
         success: function (res) {
-          if(!res){
+          if (!res) {
             wx.showToast({
               title: '加载失败',
               icon: 'none'
@@ -129,6 +148,7 @@ Page({
         }
       });
     }
+    that.getCurrentPlayId();
   },
   wxSearchInput: WxSearch.wxSearchInput,  // 输入变化时的操作
   wxSearchKeyTap: WxSearch.wxSearchKeyTap,  // 点击提示或者关键字、历史记录时的操作
@@ -139,11 +159,7 @@ Page({
   // 4 搜索回调函数  
   mySearchFunction: function (value) {
     var that = this;
-    if(that.data.showhead){
-      util.showBusy('加载中...', 120000)
-    }else{
-      util.showBusy('搜索中...', 120000)
-    }
+    util.showBusy('加载中...', 120000)
     var key = 'search_' + value + util.formatTime(new Date())
     wx.getStorage({
       key: key,
@@ -155,7 +171,7 @@ Page({
             title: '操作失败',
             icon: 'none'
           })
-         return
+          return
         }
         that.setData({
           items: data,
@@ -163,11 +179,7 @@ Page({
         if (data.length == 0) {
           util.showSuccess('没有结果')
         } else {
-          if (that.data.showhead){
-            util.showSuccess('搜索成功')
-          }else{
-            util.showSuccess('加载成功')
-          }
+          util.showSuccess('加载成功')
         }
       },
       fail: function () {
@@ -201,18 +213,14 @@ Page({
               data: dd,
             });
             if (dd.length > 0) {
-              if (that.data.showhead){
-                util.showSuccess('搜索成功')
-              }else{
-                util.showSuccess('加载成功')
-              }
+              util.showSuccess('加载成功')
             } else {
               util.showSuccess('没有结果')
             }
-          },fail:(e)=>{
+          }, fail: (e) => {
             wx.showToast({
               title: '操作失败',
-              icon:'none'
+              icon: 'none'
             })
           }
         });
@@ -230,6 +238,8 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
+    this.backgroundAudioManager = wx.getBackgroundAudioManager();
+    this.getCurrentPlayId()
   },
 
   /**
@@ -243,15 +253,15 @@ Page({
         if (res) {
           var historylist = []
           var historyplay = res.data
-          for (var x in historyplay){
-              historylist.push(historyplay[x])
+          for (var x in historyplay) {
+            historylist.push(historyplay[x])
           }
-          historylist.sort((a, b)=>{
+          historylist.sort((a, b) => {
             return parseInt(b.playtimes) - parseInt(a.playtimes)
           })
-          historylist = historylist.slice(0,10)
-          for (var x in historylist){
-            if (historylist[x].playtimes>99){
+          historylist = historylist.slice(0, 10)
+          for (var x in historylist) {
+            if (historylist[x].playtimes > 99) {
               historylist[x].playtimes = '99+'
             }
           }
@@ -268,6 +278,16 @@ Page({
           historyplay: null
         })
       }
+    });
+    that.getCurrentPlayId()
+    var animation = wx.createAnimation({
+      duration: 1000,
+      timingFunction: 'ease',
+    })
+    that.animation = animation
+    animation.scale(1, 1.5).rotate(360).step()
+    that.setData({
+      animationData: animation.export()
     })
   },
 
@@ -290,7 +310,7 @@ Page({
    */
   onPullDownRefresh: function () {
     this.setData({
-      showhead:true
+      showhead: true
     })
     var open_id = ''
     var that = this
@@ -357,10 +377,11 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
+    var share = (new Date()).getTime()%6 + 1
     return {
       title: 'i古诗词--我们都爱古诗词',
       path: '/pages/catalog/catalog',
-      imageUrl: '/static/share.jpeg',
+      imageUrl: '/static/share'+ share+'.jpg',
       success: function (res) {
         util.showSuccess('分享成功')
       },

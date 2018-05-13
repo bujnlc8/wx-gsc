@@ -25,8 +25,8 @@ var config = {
     },
     // 宋词接口
     songciUrl: `${host}/songci/`,
-    songciAudioUrl: 'https://qcloudtest-1256650966.cos.ap-guangzhou.myqcloud.com/songci-audio/',
-    neteaseAudioUrl: 'https://songci.nos-eastchina1.126.net/audio/',
+    songciAudioUrl: 'xxxxxx',
+    neteaseAudioUrl: 'xxxxxx',
     maxLayer: 10, //最多10层页面
 };
 

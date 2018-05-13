@@ -63,7 +63,7 @@ Page({
       fail: function (res) {
         wx.removeStorageSync('time2close')
         wx.removeStorageSync('closeplaytime')
-        if (that.data.time2close != 0) {
+        if (that.data.time2close&&that.data.time2close != 0) {
           wx.showToast({
             title: '取消成功',
             icon: 'none'
@@ -175,7 +175,12 @@ Page({
               work.id + '.m4a',
               currentSongci: work.work_title + '-' + work.work_author,
               currentTab: target_id,
-              show_content: show_content
+              show_content: show_content,
+              duration_show: '',
+              current_time_show: '',
+              seek2: 0,
+              slideValue: 0,
+              playing: false
             });
             wx.setStorage({
               key: 'songci' + key + util.formatTime(new Date()),
@@ -193,31 +198,30 @@ Page({
         });
       },
     })
-    wx.getStorage({
-      key: 'time2close',
-      success: function (res) {
-        that.setData({
-          time2close: res.data && res.data > 0 ? res.data : 0
-        });
-      },
-    })
-    wx.getStorage({
-      key: 'closeplaytime',
-      success: function (res) {
-        that.setData({
-          closeplaytime: res.data && res.data > 0 ? res.data : 0
-        });
-      },
-    })
+    var time2close = wx.getStorageSync('time2close')
+    that.setData({
+      time2close: time2close && time2close > 0 ? time2close : 0
+    });
+    var closeplaytime = wx.getStorageSync('closeplaytime')
+    that.setData({
+      closeplaytime: closeplaytime && closeplaytime > 0 ? closeplaytime : 0
+    });
+    setTimeout(() => {
+      that.setCurrentPlaying()
+    }, 1200)
   },
   do_operate_play: function (key, mode = "xunhuan") {
     var that = this
     var music_ids = wx.getStorageSync('music_ids')
+    if (!music_ids) {
+      that.get_music_list()
+      var music_ids = wx.getStorageSync('music_ids')
+    }
     var play_id = 1
-    var mode = this.data.mode
+    var mode = that.data.mode
     if (mode == 'xunhuan') {
       var index = music_ids.indexOf(
-        this.data.songciItem.id)
+        that.data.songciItem.id)
       //循环播放
       if (key == 'next') {
         if (index == music_ids.length - 1) {
@@ -234,7 +238,7 @@ Page({
       }
     } else if (that.data.mode == 'one') {
       //单曲循环
-      play_id = this.data.songciItem.id
+      play_id = that.data.songciItem.id
     } else {
       //随机播放
       var music_ids = wx.getStorageSync('music_ids')
@@ -245,17 +249,18 @@ Page({
       play_id = music_ids[play_id]
     }
     try {
-      this.get_by_id(play_id)
-      this.setData({
-        duration_show: '',
-        current_time_show: '',
-        seek2: 0,
-        slideValue: 0,
-      });
+      that.get_by_id(play_id)
       setTimeout(() => {
-        that.playsound();
-        that.record_play();
-      }, 1000)
+        if (that.data.songciItem.id == play_id) {
+          that.playsound();
+          that.record_play();
+        } else {
+          wx.showToast({
+            title: '网络不太好???',
+            icon: 'none'
+          });
+        }
+      }, 1500)
     } catch (e) {
       wx.showToast({
         title: '播放失败',
@@ -352,7 +357,6 @@ Page({
     wx.setStorageSync('historyplay', historyplay)
   },
   search_: function (e) {
-    this.pauseplaybackmusic()
     var id_ = e.target.dataset.id_
     var q = e.target.dataset.q
     var pages = getCurrentPages()
@@ -394,7 +398,6 @@ Page({
     })
   },
   onPullDownRefresh: function () {
-    this.pauseplaybackmusic()
     wx.showNavigationBarLoading();
     var that = this
     if (parseInt(that.data.audioId) > 8099) {
@@ -423,6 +426,7 @@ Page({
     util.showBusy('加载中', 20000)
     that.get_by_id(that.data.audioId)
     util.closeToast()
+    that.get_music_list()
   },
   playsound: function () {
     const backgroundAudioManager = this.backgroundAudioManager
@@ -508,10 +512,28 @@ Page({
     this.backgroundAudioManager.onTimeUpdate(() => {
       that.musicStart()
     });
-    this.get_music_list()
+  },
+  setCurrentPlaying: function () {
+    var that = this
+    // 如果正在播放
+    if (that.backgroundAudioManager && !that.backgroundAudioManager.paused) {
+      var audioUrl = that.backgroundAudioManager.src
+      if (audioUrl) {
+        var re = /[0-9]+\.m4a/g
+        var results = audioUrl.match(re)
+        if (results.length > 0) {
+          results = results[0].slice(0, -4)
+          if (that.data.audioId == results) {
+            that.setData({
+              playing: true
+            })
+          }
+        }
+      }
+    }
   },
   get_music_list: function () {
-    if (this.data.songciItem && this.data.songciItem.audio_id > 0) {
+    if (this.data.audioId > 0) {
       var value = "音频"
       var key = 'search_音频' + util.formatTime(new Date())
       wx.getStorage({
@@ -555,7 +577,7 @@ Page({
   onShow: function () {
     this.setData({
       seek2: 0
-    });
+    })
   },
 
   /**
@@ -572,7 +594,6 @@ Page({
   },
   longPress: function () {
     var that = this
-    that.pauseplaybackmusic()
     if (parseInt(that.data.audioId) <= 1) {
       that.setData({
         audioId: 8101
@@ -584,10 +605,11 @@ Page({
   },
 
   onShareAppMessage: function (res) {
+    var share = (new Date()).getTime()%6 + 1
     return {
       title: this.data.currentSongci,
       path: '/pages/songci/songci?id=' + this.data.audioId,
-      imageUrl: '/static/share0.jpeg',
+      imageUrl: '/static/share'+share+'.jpg',
       success: function (res) {
         util.showSuccess('分享成功')
       },
@@ -597,7 +619,6 @@ Page({
     }
   },
   longPressBack: function () {
-    this.pauseplaybackmusic()
     wx.redirectTo({
       url: '/pages/catalog/catalog',
     })
@@ -606,16 +627,11 @@ Page({
     var that = this
     try {
       var time2close = wx.getStorageSync('time2close')
-      if (time2close && (new Date().getTime()) > time2close * 1000) {
+      if (time2close && (new Date()).getTime() > time2close * 1000) {
         that.pauseplaybackmusic()
-        that.setdata({
+        that.setData({
           time2close: 0,
-          closeplaytime: 0,
-          playing: false,
-          duration_show: '',
-          current_time_show: '',
-          seek2: 0,
-          slideValue: 0,
+          closeplaytime: 0
         })
         wx.showToast({
           title: '播放器已关闭',
@@ -624,6 +640,14 @@ Page({
         wx.removeStorageSync('time2close')
         wx.removeStorageSync('closeplaytime')
         return
+      }
+      if (time2close && (new Date()).getTime() < time2close * 1000) {
+        var last_micro_seconds = time2close - (new Date()).getTime() / 1000
+        if (last_micro_seconds) {
+          that.setData({
+            closeplaytime: parseInt(last_micro_seconds / 60.0)
+          });
+        }
       }
     } catch (e) { }
     var current_time = this.backgroundAudioManager.currentTime
