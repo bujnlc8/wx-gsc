@@ -23,7 +23,7 @@ Page({
   setTimed: function () {
     var that = this
     wx.showActionSheet({
-      itemList: ['2小时', '1小时', '30分钟', '10分钟'],
+      itemList: ['2小时', '1小时', '30分钟', '10分钟', '不设置'],
       success: function (res) {
         var index = res.tapIndex
         var seconds = 0
@@ -40,39 +40,45 @@ Page({
           case 3:
             seconds = 600
             break
+          case 4:
+            seconds = -1
+            break
         }
-        var time2close = (new Date).getTime() / 1000 + seconds
-        if (that.data.playing) {
-          wx.showToast({
-            title: '播放器将于' + util.timetrans(time2close).slice(11) + '关闭',
-            icon: 'none'
-          })
-          wx.setStorageSync('time2close', time2close)
-          wx.setStorageSync('closeplaytime', seconds / 60)
+        if (seconds == -1) {
+          wx.removeStorageSync('time2close')
+          wx.removeStorageSync('closeplaytime')
+          if (that.data.time2close && that.data.time2close != 0) {
+            wx.showToast({
+              title: '取消成功',
+              icon: 'none'
+            })
+          }
           that.setData({
-            time2close: time2close,
-            closeplaytime: seconds / 60
+            time2close: 0,
+            closeplaytime: 0
           })
         } else {
-          wx.showToast({
-            title: '请先打开播放器',
-            icon: 'none'
-          })
+          var time2close = (new Date).getTime() / 1000 + seconds
+          if (that.data.playing) {
+            wx.showToast({
+              title: '播放器将于' + util.timetrans(time2close).slice(11) + '关闭',
+              icon: 'none'
+            })
+            wx.setStorageSync('time2close', time2close)
+            wx.setStorageSync('closeplaytime', seconds / 60)
+            that.setData({
+              time2close: time2close,
+              closeplaytime: seconds / 60
+            })
+          } else {
+            wx.showToast({
+              title: '请先打开播放器',
+              icon: 'none'
+            })
+          }
         }
       },
       fail: function (res) {
-        wx.removeStorageSync('time2close')
-        wx.removeStorageSync('closeplaytime')
-        if (that.data.time2close&&that.data.time2close != 0) {
-          wx.showToast({
-            title: '取消成功',
-            icon: 'none'
-          })
-        }
-        that.setData({
-          time2close: 0,
-          closeplaytime: 0
-        })
       }
     })
   },
@@ -190,14 +196,6 @@ Page({
         });
       }
     });
-    wx.getStorage({
-      key: 'play_mode',
-      success: function (res) {
-        that.setData({
-          mode: res.data ? res.data : 'xunhuan'
-        });
-      },
-    })
     var time2close = wx.getStorageSync('time2close')
     that.setData({
       time2close: time2close && time2close > 0 ? time2close : 0
@@ -206,9 +204,13 @@ Page({
     that.setData({
       closeplaytime: closeplaytime && closeplaytime > 0 ? closeplaytime : 0
     });
+    var play_mode = wx.getStorageSync('play_mode')
+    that.setData({
+      mode: play_mode ? play_mode : 'xunhuan'
+    });
     setTimeout(() => {
       that.setCurrentPlaying()
-    }, 1200)
+    }, 1500)
   },
   do_operate_play: function (key, mode = "xunhuan") {
     var that = this
@@ -250,18 +252,25 @@ Page({
     }
     try {
       that.get_by_id(play_id)
-      setTimeout(() => {
+      var try_times = 0
+      var try_play = () => {
         if (that.data.songciItem.id == play_id) {
           that.playsound();
           that.record_play();
-        } else {
+          clearInterval(int)
+        }
+        try_times ++
+        if(try_times>=100){
           wx.showToast({
-            title: '网络不太好???',
+            title: '播放失败',
             icon: 'none'
           });
+          clearInterval(int)
         }
-      }, 1500)
+      }
+    let int = setInterval(try_play, 500)
     } catch (e) {
+      console.log(e)
       wx.showToast({
         title: '播放失败',
         icon: 'none'
@@ -605,11 +614,11 @@ Page({
   },
 
   onShareAppMessage: function (res) {
-    var share = (new Date()).getTime()%6 + 1
+    var share = (new Date()).getTime() % 6 + 1
     return {
       title: this.data.currentSongci,
       path: '/pages/songci/songci?id=' + this.data.audioId,
-      imageUrl: '/static/share'+share+'.jpg',
+      imageUrl: '/static/share' + share + '.jpg',
       success: function (res) {
         util.showSuccess('分享成功')
       },
@@ -692,6 +701,6 @@ Page({
     });
     setTimeout(() => {
       that.playsound()
-    }, 800)
+    }, 1000)
   }
 });
