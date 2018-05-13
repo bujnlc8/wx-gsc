@@ -2,3 +2,4 @@
 .DS_Store
 .idea/
 client/vendor/*
+server/vendor/*
