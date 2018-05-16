@@ -15,7 +15,7 @@
   <view class='content {{songciItem.layout}}'>
     <text selectable='true' decode="true" space="true">{{songciItem.content}}</text>
   </view>
-  <view style='display:flex;flex-direction:row;height:30x;' wx:if="{{songciItem.audio_id!=0}}">
+  <view style='display:flex;flex-direction:row;height:30x;margin-top:10px;' wx:if="{{songciItem.audio_id!=0}}">
     <view style='flex:40;text-align:right;'>
       <navigator url='/pages/catalog/catalog?q=音频' style='display:inline-block;'>
         <image src='../../static/list.png' class="operate_music" style='margin-right:15px;'></image>

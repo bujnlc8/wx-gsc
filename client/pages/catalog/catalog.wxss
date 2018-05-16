@@ -1,10 +1,11 @@
 @import "../wxSearchView/wxSearchView.wxss";
-.my_catalog{
-  min-height: 2em;
-  line-height: 2em;
-}
 .itemSongci{
-  min-height: 2.2em;
+  min-height: 2.4em;
+  border-bottom-width: 0.70rpx;
+  border-bottom-style: dotted;
+  border-bottom-color: rgba(187, 126, 126, 0.4);
+  margin-left: 15rpx;
+  margin-right: 15rpx;
 }
 .catalog{
   margin-left:15rpx;
@@ -13,24 +14,17 @@
 .songci{
     margin-top: 30rpx;
 }
-.content{
-  font-size: 29rpx;
-  margin-left: 15rpx;
+.content_text{
+  font-size: 27rpx;
+  display: inline-block;
+  width: 75%;
 }
 .title{
-  font-size: 33rpx;
-  margin-left: 15rpx;
+  font-size: 32rpx;
 }
 .author{
-  font-size: 28rpx;
-  margin-right: 15rpx;
-  float: right;
-}
-.split{
-  height: 0.8rpx;
-  background-color: #D42424;
-  margin-top: 20rpx;
-  margin-left: 15rpx;
-  margin-right: 15rpx;
-  opacity: 0.2;
+  font-size: 25rpx;
+  display: inline-block;
+  width: 25%;
+  text-align: right;
 }

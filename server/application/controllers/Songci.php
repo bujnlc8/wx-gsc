@@ -47,7 +47,7 @@ class Songci extends CI_Controller
                 'content',
                 'translation',
                 'intro', 'annotation_', 'foreword', 'appreciation', 'master_comment', 'layout', 'audio_id'
-            ], ' id in  ('.$s.')');
+            ], ' id in  ('.$s.')  order by audio_id desc');
         } else {
             $result = DB::select('gsc', [
                 'id',
@@ -107,16 +107,37 @@ class Songci extends CI_Controller
     public function query()
     {
         $q = $this->uri->segment(3);
+        $page = $this->uri->segment(4);
+        $open_id = $this->uri->segment(5);
         $q = urldecode($q);
         $arr = array();
         if ($q && $q!='音频') {
+            if($page=='main'){
             $result = DB::select('gsc', [
                 'id',
                 'work_title',
                 'work_author',
                 'work_dynasty',
-                'content'
-            ], '(work_title like "%' . $q . '%")  or ' . '(work_author like "%' . $q . '%") or ' . '(content like "%' . $q . '%") ');
+                'content',
+                'audio_id'
+            ], '(work_title like "%' . $q . '%")  or ' . '(work_author like "%' . $q . '%") order by audio_id desc');
+            }else{
+              //只在我的喜欢里面搜索
+            $my_lises = DB::select('user_like_gsc', ['gsc_id'], 'open_id="'.$open_id.'"');
+             $s = array();
+            for($index=0;$index<count($my_lises);$index++){
+             $s[$index] = $my_lises[$index]->gsc_id;
+            }
+            $s = join(',', $s);
+            $result = DB::select('gsc', [
+                'id',
+                'work_title',
+                'work_author',
+                'work_dynasty',
+                'content',
+                'audio_id'
+            ], ' id in  ('.$s.')  and ((work_title like "%' . $q . '%")  or ' . '(work_author like "%' . $q . '%"))   order by audio_id desc' );
+            }
         } else if(!$q) {
           $num = range(1,8100);
           shuffle($num);
@@ -130,16 +151,18 @@ class Songci extends CI_Controller
                 'work_title',
                 'work_author',
                 'work_dynasty',
-                'content'
-            ], ' id in  ('.$s.')');
+                'content',
+                'audio_id'
+            ], ' id in  ('.$s.') order by audio_id desc');
         }else{
           $result = DB::select('gsc', [
                 'id',
                 'work_title',
                 'work_author',
                 'work_dynasty',
-                'content'
-            ], ' audio_id > 0 ');
+                'content',
+                'audio_id'
+            ], ' audio_id > 0 order by audio_id desc');
         }
         for ($index = 0; $index < count($result); $index ++) {
             $row = $result[$index];
@@ -148,7 +171,8 @@ class Songci extends CI_Controller
                 'work_title' => $row->work_title,
                 'work_author' => $row->work_author,
                 'work_dynasty' => $row->work_dynasty,
-                'content' => $row->content
+                'content' => $row->content,
+                'audio_id'=>$row->audio_id
             );
             $arr[] = $data;
         }
@@ -185,8 +209,9 @@ $s = join(',', $s);
                 'work_title',
                 'work_author',
                 'work_dynasty',
-                'content'
-            ], ' id in  ('.$s.')');
+                'content',
+                'audio_id'
+            ], ' id in  ('.$s.') order by audio_id desc');
         for ($index = 0; $index < count($result); $index ++) {
             $row = $result[$index];
             $data = array(
@@ -194,7 +219,8 @@ $s = join(',', $s);
                 'work_title' => $row->work_title,
                 'work_author' => $row->work_author,
                 'work_dynasty' => $row->work_dynasty,
-                'content' => $row->content
+                'content' => $row->content,
+                'audio_id'=>$row->audio_id
             );
             $arr[] = $data;
         }

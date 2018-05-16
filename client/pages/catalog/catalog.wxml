@@ -1,29 +1,38 @@
 <!--pages/catalog/catalog.wxml-->
 <view class='container catalog'>
-<view  wx:if="{{showhead}}">
-  <include src="../wxSearchView/wxSearchView.wxml" />
-  <view style='margin-top:35rpx;' wx:if="{{historyplay&&historyplay.length>0}}">
-  <view style='margin-left:10px;font-size:12px;'>最近播放</view>
-  <view style='border-bottom:1px solid #eee;'>
-    <text bindtap='go2detail' class='title my_catalog myclick' data-id_='{{item.id}}' wx:for="{{historyplay}}" wx:key="{{item.id}}"  style='border:1px solid #eee;display:inline-block;height:2em;line-height:2em;font-size:12px;padding:3px 4px;margin:4px;border-radis:2px;position:relative;'wx:if="{{item.work_title}}">{{item.work_title}}-{{item.work_author}}
+  <view wx:if="{{showhead}}">
+    <include src="../wxSearchView/wxSearchView.wxml" />
+    <view style='margin-top:10px;' wx:if="{{historyplay&&historyplay.length>0}}">
+      <view style='margin-left:5px;font-size:12px;'>最近播放</view>
+      <view style='border-bottom:1px solid #eee;'>
+        <text bindtap='go2detail' class='title myclick' data-id_='{{item.id}}' wx:for="{{historyplay}}" wx:key="{{item.id}}" style='border:1px solid #eee;display:inline-block;height:2em;line-height:2em;font-size:12px;padding:3px 4px;margin:4px;border-radis:2px;position:relative;'
+          wx:if="{{item.work_title}}">{{item.work_title}}-{{item.work_author}}
      <text style='display:inline-block;width:40rpx;height:40rpx;border-radius:20rpx;background-color:#2BB630;text-align:center;line-height:40rpx;font-size:18rpx;position:absolute;top:-8px;right:-8px;opacity:0.8;color:white;'>{{item.playtimes}}</text>
-    </text>
+        </text>
+      </view>
     </view>
-  </view>
-  <view style='margin-left:10px;margin-top:10px;;font-size:12px;'>搜索结果({{items.length}})</view>
+    <view style='margin-left:5px;margin-top:10px;;font-size:12px;'>搜索结果({{items.length}})</view>
   </view>
   <view wx:for="{{items}}" wx:key="id">
-    <view class='itemSongci'>
-      <view class='my_catalog myclick' data-id_='{{item.id}}'>
-        <view class='songci' bindtap='go2detail' data-id_='{{item.id}}' animation="{{ !showhead && currentplayId==item.id?animationData:''}}">
-          <text class='title' data-id_='{{item.id}}'
-          style="{{currentplayId==item.id?'font-style:italic;color:#BB7E7E;font-weight:600;':''}}"
-            ><text wx:if="{{!showhead}}" data-id_='{{item.id}}'>{{index + 1}}.</text>{{item.work_title}}</text>
-          <text class='author' style="{{currentplayId==item.id?'font-style:italic;color:#BB7E7E;font-weight:600;':''}}" data-id_='{{item.id}}'>[{{item.work_dynasty}}] {{item.work_author}}</text>
-          <view class='content' data-id_='{{item.id}}'><text wx:if="{{showhead}}" data-id_='{{item.id}}'>{{item.short_content}}</text></view>
+    <view class='itemSongci' wx:if="{{showhead}}">
+      <view class='myclick' data-id_='{{item.id}}'>
+        <view class='songci' bindtap='go2detail' data-id_='{{item.id}}' style='position:relative;'>
+          <text class='title' data-id_='{{item.id}}' style="{{currentplayId==item.id?'font-style:italic;color:#BB7E7E;font-weight:600;':''}}">{{item.work_title}}
+          </text>
+          <view wx:if="{{item.audio_id>0}}" style='position:absolute;top:2px;right:15rpx;'>
+            <image src='../../static/sound.png' style='width:1.4em;height:1.4em;' data-id_='{{item.id}}'></image>
+          </view>
+          <view data-id_='{{item.id}}'>
+            <text data-id_='{{item.id}}' class="content_text" style="{{currentplayId==item.id?'font-style:italic;color:#BB7E7E;font-weight:600;':''}}">{{item.short_content}}</text>
+            <text class='author' style="{{currentplayId==item.id?'font-style:italic;color:#BB7E7E;font-weight:600;':''}}" data-id_='{{item.id}}'>[{{item.work_dynasty}}] {{item.work_author}}</text>
+          </view>
         </view>
       </view>
-      <view class='split'></view>
+    </view>
+    <view class="itemSongci myclick" wx:if="{{!showhead}}" bindtap='go2detail' data-id_='{{item.id}}'>
+      <view class='title songci myclick' data-id_='{{item.id}}' animation="{{currentplayId==item.id?animationData:''}}" data-id_='{{item.id}}'>
+        <text style="{{currentplayId==item.id?'font-style:italic;color:#BB7E7E;font-weight:600;':''}}" data-id_='{{item.id}}'>{{index+1}}.{{item.work_title}} - {{item.work_author}}</text>
+      </view>
     </view>
   </view>
 </view>

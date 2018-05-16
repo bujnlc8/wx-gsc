@@ -3,17 +3,13 @@ var config = require('../../config')
 var util = require('../../utils/util.js')
 var WxSearch = require('../wxSearchView/wxSearchView.js');
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
     items: [],
     page: 'main',
     historyplay: null,
     showhead: true,
     currentplayId: 0,
-    animationData:{}
+    animationData: {}
   },
   getCurrentPlayId: function () {
     var that = this
@@ -63,13 +59,15 @@ Page({
     })
   },
   getAllData: function (context) {
-    util.showBusy('加载中', 20000)
+    wx.showLoading({
+      title: '加载中...',
+    });
     wx.request({
       url: config.songciUrl + 'index/all',
       success(result) {
         if (!result || result.data.code != 0) {
           wx.showToast({
-            title: '网络异常',
+            title: '网络异常~~',
             icon: 'none'
           });
           return
@@ -78,22 +76,32 @@ Page({
         var dd = []
         for (var data of datas) {
           var splits = data.content.split("。")
+          var fuhao = '。'
           if (splits.length > 0) {
-            data.short_content = splits[0]
+            if (splits[0].indexOf('？')>=0){
+              fuhao = "？"
+            }
+            data.short_content = splits[0].split('？')[0]
           } else {
             data.short_content = data.content
           }
-          data.short_content += '。'
+          data.short_content += fuhao
           dd.push(data)
         }
         context.setData({
           items: dd,
         });
-        util.closeToast()
         wx.setStorage({
           key: "songciItems" + util.formatTime(new Date()),
           data: dd
         });
+        wx.hideLoading();
+      }, fail: function () {
+        wx.hideLoading();
+        wx.showToast({
+          title: '加载失败:(',
+          icon: 'none'
+        })
       }
     });
   },
@@ -127,7 +135,7 @@ Page({
         success: function (res) {
           if (!res) {
             wx.showToast({
-              title: '加载失败',
+              title: '加载失败:(',
               icon: 'none'
             });
             return
@@ -136,11 +144,13 @@ Page({
           if (!items || items.length == 0) {
             that.getAllData(that);
           } else {
-            util.showBusy('加载中', 15000)
+            wx.showLoading({
+              title: '加载中...',
+            })
             that.setData({
               items: items,
             })
-            util.closeToast()
+            wx.hideLoading();
           }
         },
         fail: function (err) {
@@ -158,9 +168,12 @@ Page({
 
   // 4 搜索回调函数  
   mySearchFunction: function (value) {
+    wx.showLoading({
+      title: '加载中...'
+    });
     var that = this;
-    util.showBusy('加载中...', 120000)
-    var key = 'search_' + value + util.formatTime(new Date())
+    var page = that.data.page
+    var key = 'search_' + value + util.formatTime(new Date()) + '_' + page
     wx.getStorage({
       key: key,
       success: function (res) {
@@ -168,7 +181,7 @@ Page({
           var data = res.data
         } else {
           wx.showToast({
-            title: '操作失败',
+            title: '网络异常~~',
             icon: 'none'
           })
           return
@@ -177,18 +190,32 @@ Page({
           items: data,
         });
         if (data.length == 0) {
-          util.showSuccess('没有结果')
+          util.showSuccess('没有相关内容')
         } else {
-          util.showSuccess('加载成功')
+          wx.hideLoading();
         }
       },
       fail: function () {
+        var open_id = 'abcd'
+        if (page == 'like') {
+          try {
+            open_id = wx.getStorageSync('user_open_id')
+          } catch (e) {
+          }
+          if (!open_id) {
+            util.userLogin()
+            wx.showToast({
+              title: '请重试一次',
+              icon: 'none'
+            });
+          }
+        }
         wx.request({
-          url: config.songciUrl + 'query/' + value,
+          url: config.songciUrl + 'query/' + value + '/' + page + '/' + open_id,
           success(result) {
             if (!result || result.data.code != 0) {
               wx.showToast({
-                title: '操作失败',
+                title: '网络异常~~',
                 icon: 'none'
               })
               return
@@ -197,12 +224,16 @@ Page({
             var dd = []
             for (var data of datas) {
               var splits = data.content.split("。")
+              var fuhao = '。'
               if (splits.length > 0) {
-                data.short_content = splits[0]
+                if (splits[0].indexOf('？') >= 0) {
+                  fuhao = "？"
+                }
+                data.short_content = splits[0].split('？')[0]
               } else {
                 data.short_content = data.content
               }
-              data.short_content += '。'
+              data.short_content += fuhao
               dd.push(data)
             }
             that.setData({
@@ -212,20 +243,31 @@ Page({
               key: key,
               data: dd,
             });
-            if (dd.length > 0) {
-              util.showSuccess('加载成功')
+            if (dd.length == 0) {
+              util.showSuccess('没有相关内容')
             } else {
-              util.showSuccess('没有结果')
+              wx.hideLoading();
             }
           }, fail: (e) => {
             wx.showToast({
-              title: '操作失败',
+              title: '网络异常~~',
               icon: 'none'
             })
           }
         });
       }
     });
+    setTimeout(()=>{
+      if (page == 'like') {
+        wx.setNavigationBarTitle({
+          title: '我的收藏'
+        });
+      } else {
+        wx.setNavigationBarTitle({
+          title: 'i古诗词'
+        });
+      }
+    }, 200);
   },
   // 5 返回回调函数
   myGobackFunction: function () {
@@ -309,60 +351,79 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-    this.setData({
+    var that = this
+    that.setData({
       showhead: true
     })
-    var open_id = ''
-    var that = this
-    try {
-      open_id = wx.getStorageSync('user_open_id')
-    } catch (e) {
-    }
-    if (!open_id) {
-      util.userLogin()
-      wx.showToast({
-        title: '请再试一次',
-        icon: 'none'
-      });
-      wx.hideNavigationBarLoading()
-      wx.stopPullDownRefresh()
-      return
-    }
-    wx.request({
-      url: config.songciUrl + 'mylike/' + open_id,
-      success(result) {
-        if (!result || result.data.code != 0) {
-          wx.showToast({
-            title: '操作失败',
-            icon: 'none'
-          });
-          wx.hideNavigationBarLoading()
-          wx.stopPullDownRefresh()
-          return
-        }
-        var datas = result.data.data.data
-        var dd = []
-        for (var data of datas) {
-          var splits = data.content.split("。")
-          if (splits.length > 0) {
-            data.short_content = splits[0]
-          } else {
-            data.short_content = data.content
-          }
-          data.short_content += '。'
-          dd.push(data)
-        }
-        that.setData({
-          items: dd,
-          page: 'like'
-        });
-        wx.setNavigationBarTitle({
-          title: '我的收藏'
+    if (that.data.page == 'main') {
+      var open_id = ''
+      try {
+        open_id = wx.getStorageSync('user_open_id')
+      } catch (e) {
+      }
+      if (!open_id) {
+        util.userLogin()
+        wx.showToast({
+          title: '请重试一次',
+          icon: 'none'
         });
         wx.hideNavigationBarLoading()
         wx.stopPullDownRefresh()
+        return
       }
-    });
+      wx.request({
+        url: config.songciUrl + 'mylike/' + open_id,
+        success(result) {
+          if (!result || result.data.code != 0) {
+            wx.showToast({
+              title: '网络异常~~',
+              icon: 'none'
+            });
+            wx.hideNavigationBarLoading()
+            wx.stopPullDownRefresh()
+            return
+          }
+          var datas = result.data.data.data
+          var dd = []
+          for (var data of datas) {
+            var splits = data.content.split("。")
+            var fuhao = '。'
+            if (splits.length > 0) {
+              if (splits[0].indexOf('？') >= 0) {
+                fuhao = "？"
+              }
+              data.short_content = splits[0].split('？')[0]
+            } else {
+              data.short_content = data.content
+            }
+            data.short_content += fuhao
+            dd.push(data)
+          }
+          that.setData({
+            items: dd
+          })
+        }
+      });
+      wx.setNavigationBarTitle({
+        title: '我的收藏'
+      });
+    } else {
+      wx.setNavigationBarTitle({
+        title: 'i古诗词'
+      });
+      that.getData(that);
+    }
+    if (that.data.page == 'main'){
+      that.setData({
+        page: 'like'
+      });
+    }else{
+      that.setData({
+        page: 'main'
+      });
+    }
+    wx.hideNavigationBarLoading()
+    wx.stopPullDownRefresh()
     WxSearch.wxSearchClear()
   },
 
@@ -377,11 +438,11 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
-    var share = (new Date()).getTime()%6 + 1
+    var q = this.data.wxSearchData.value
     return {
-      title: 'i古诗词--我们都爱古诗词',
-      path: '/pages/catalog/catalog',
-      imageUrl: '/static/share'+ share+'.jpg',
+      title: 'i古诗词--' + (q ? q :'我们都爱古诗词'),
+      path: '/pages/catalog/catalog' + (q?('?q='+q):''),
+      imageUrl: '/static/share4.jpg',
       success: function (res) {
         util.showSuccess('分享成功')
       },

@@ -1,6 +1,6 @@
 .myclick :hover{
   background-color: #F6F6F6;
-  border-radius: 14rpx;
+  border-radius: 15rpx;
   opacity: 0.7;
   font-weight: 600;
 }

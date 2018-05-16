@@ -117,7 +117,12 @@ Page({
       wx.setStorageSync('play_mode', mode)
     } catch (e) { }
   },
-  get_by_id: function (key) {
+  get_by_id: function (key, pull=false) {
+    if(!pull){
+      wx.showLoading({
+        title: '加载中...'
+      });
+    }
     var that = this
     wx.getStorage({
       key: 'songci' + key + util.formatTime(new Date()),
@@ -139,7 +144,7 @@ Page({
           success(result) {
             if (!result || result.data.code != 0) {
               wx.showToast({
-                title: '网络异常',
+                title: '网络异常~~',
                 icon: 'none'
               })
               return
@@ -210,7 +215,12 @@ Page({
     });
     setTimeout(() => {
       that.setCurrentPlaying()
-    }, 1500)
+    }, 1500);
+    if (!pull) {
+      setTimeout(() => {
+      wx.hideLoading()
+      }, 600)
+    }
   },
   do_operate_play: function (key, mode = "xunhuan") {
     var that = this
@@ -260,19 +270,18 @@ Page({
           clearInterval(int)
         }
         try_times ++
-        if(try_times>=100){
+        if(try_times>=1000){
           wx.showToast({
-            title: '播放失败',
+            title: '播放失败:(',
             icon: 'none'
           });
           clearInterval(int)
         }
       }
-    let int = setInterval(try_play, 500)
+    let int = setInterval(try_play, 600)
     } catch (e) {
-      console.log(e)
       wx.showToast({
-        title: '播放失败',
+        title: '播放失败:(',
         icon: 'none'
       })
     }
@@ -295,7 +304,7 @@ Page({
           success: function (res) {
             if (!res || res.data.code != 0) {
               wx.showToast({
-                title: '网络异常',
+                title: '网络异常~~',
                 icon: 'none'
               });
               return
@@ -415,9 +424,11 @@ Page({
       });
     }
     var key = parseInt(that.data.audioId) + 1
-    that.get_by_id(key)
-    wx.hideNavigationBarLoading()
-    wx.stopPullDownRefresh()
+    that.get_by_id(key, true)
+    setTimeout(()=>{
+      wx.hideNavigationBarLoading()
+      wx.stopPullDownRefresh()
+    }, 700)
   },
   /**
    * 生命周期函数--监听页面加载
@@ -432,9 +443,7 @@ Page({
         audioId: options.id
       })
     }
-    util.showBusy('加载中', 20000)
     that.get_by_id(that.data.audioId)
-    util.closeToast()
     that.get_music_list()
   },
   playsound: function () {
@@ -448,7 +457,6 @@ Page({
     this.setData({
       playing: true
     });
-    backgroundAudioManager.play()
     backgroundAudioManager.seek(this.data.seek2)
   },
 
@@ -488,15 +496,14 @@ Page({
       that.do_operate_play('next', mode)
     });
     this.backgroundAudioManager.onStop(() => {
-      that.record_play();
-      that.playsound();
+      that.pauseplaybackmusic()
     });
     this.backgroundAudioManager.onError((e) => {
       that.setData({
         playing: false
       })
       wx.showToast({
-        title: '播放失败',
+        title: '播放失败:(',
         icon: 'none'
       });
     });
@@ -521,6 +528,9 @@ Page({
     this.backgroundAudioManager.onTimeUpdate(() => {
       that.musicStart()
     });
+   setTimeout(()=>{
+     wx.hideLoading()
+   }, 500)
   },
   setCurrentPlaying: function () {
     var that = this
@@ -584,9 +594,6 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.setData({
-      seek2: 0
-    })
   },
 
   /**
@@ -608,17 +615,15 @@ Page({
         audioId: 8101
       });
     }
-    util.showBusy('加载中')
     var key = parseInt(that.data.audioId) - 1
     that.get_by_id(key)
   },
 
   onShareAppMessage: function (res) {
-    var share = (new Date()).getTime() % 6 + 1
     return {
       title: this.data.currentSongci,
       path: '/pages/songci/songci?id=' + this.data.audioId,
-      imageUrl: '/static/share' + share + '.jpg',
+      imageUrl: '/static/share4.jpg',
       success: function (res) {
         util.showSuccess('分享成功')
       },
