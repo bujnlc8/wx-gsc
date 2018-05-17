@@ -8,7 +8,7 @@ Page({
     duration: 0,
     audioUrl: '',
     currentSongci: '',
-    poster: 'http://r.photo.store.qq.com/psb?/V121Rqgy1YUsix/nJ4Eibo686t9B1X3x34tDI6B66fSRpm1X*pm8OX0YvQ!/r/dFYBAAAAAAAA',
+    poster: 'http://m.qpic.cn/psb?/V121Rqgy1YUsix/IviqfBJYA85bdpCyovu1Pi2.YVOCku1MlgYcy4FbGv0!/b/dDEBAAAAAAAA&bo=7wHzAQAAAAARByw!&rf=viewer_4',
     currentTab: 0,
     show_content: '',
     playing: false,
