@@ -26,7 +26,7 @@
       <image src='../../static/up_music.png' class="operate_music" bindtap='operate_play' data-key='up'></image>
     </view>
     <view style='flex:20;text-align:center;'>
-      <image src='../../static/{{playing?"pause":"play_music"}}.png' style='width:30px;height:30px;' bindtap='playbackmusic'></image>
+      <image src='../../static/{{playing ? "pause" : "play_music"}}.png' style='width:30px;height:30px;' bindtap='playbackmusic'></image>
     </view>
     <view style='flex:45;text-align:left;position:relative;'>
       <image src='../../static/next_music.png' class="operate_music" bindtap='operate_play' data-key='next'></image>

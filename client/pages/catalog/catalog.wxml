@@ -35,4 +35,8 @@
       </view>
     </view>
   </view>
+  <navigator wx:if="{{currentplayId>0}}" url='/pages/songci/songci?id={{currentplayId}}'>
+    <image animation="{{playinganimation}}" class='playingicon' src='../../static/quan.png' style='width:70rpx;height:70rpx;position:fixed;bottom:60rpx;right:5px;z-index:999;'>
+    </image>
+  </navigator>
 </view>

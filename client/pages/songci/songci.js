@@ -85,6 +85,7 @@ Page({
   change_mode: function () {
     //xunhuan->one->shuffle->xunhuan
     var mode = "xunhuan"
+    var that = this
     if (this.data.mode == 'xunhuan') {
       this.setData({
         mode: "one"
@@ -94,6 +95,7 @@ Page({
         title: '单曲循环',
         icon: 'none'
       })
+      wx.setStorageSync('singleid', { 'id': that.data.songciItem.id, 'url': that.data.audioUrl, 'title': that.data.songciItem.work_title, 'author': that.data.songciItem.work_author })
     } else if (this.data.mode == 'one') {
       this.setData({
         mode: "shuffle"
@@ -117,8 +119,8 @@ Page({
       wx.setStorageSync('play_mode', mode)
     } catch (e) { }
   },
-  get_by_id: function (key, pull=false) {
-    if(!pull){
+  get_by_id: function (key, pull = false) {
+    if (!pull) {
       wx.showLoading({
         title: '加载中...'
       });
@@ -218,7 +220,7 @@ Page({
     }, 1500);
     if (!pull) {
       setTimeout(() => {
-      wx.hideLoading()
+        wx.hideLoading()
       }, 600)
     }
   },
@@ -250,7 +252,21 @@ Page({
       }
     } else if (that.data.mode == 'one') {
       //单曲循环
-      play_id = that.data.songciItem.id
+      try {
+        var play_id_url = wx.getStorageSync('singleid')
+        that.backgroundAudioManager.src = play_id_url.url
+        that.backgroundAudioManager.title = play_id_url.title
+        that.backgroundAudioManager.singer = play_id_url.author
+        that.backgroundAudioManager.epname = 'i古诗词'
+        that.backgroundAudioManager.play()
+      } catch (e) {
+        wx.setStorageSync('singleid', { 'id': that.data.songciItem.id, 'url': that.data.audioUrl, 'title': that.data.songciItem.work_title, 'author': that.data.songciItem.work_author })
+        that.backgroundAudioManager.src = that.data.audioUrl
+        that.backgroundAudioManager.title = that.data.songciItem.work_title
+        that.backgroundAudioManager.epname = 'i古诗词'
+        that.backgroundAudioManager.singer = that.data.songciItem.work_author
+        that.backgroundAudioManager.play()
+      }
     } else {
       //随机播放
       var music_ids = wx.getStorageSync('music_ids')
@@ -260,30 +276,32 @@ Page({
       }
       play_id = music_ids[play_id]
     }
-    try {
-      that.get_by_id(play_id)
-      var try_times = 0
-      var try_play = () => {
-        if (that.data.songciItem.id == play_id) {
-          that.playsound();
-          that.record_play();
-          clearInterval(int)
+    if (mode != 'one') {
+      try {
+        that.get_by_id(play_id)
+        var try_times = 0
+        var try_play = () => {
+          if (that.data.songciItem.id == play_id) {
+            that.playsound();
+            that.record_play();
+            clearInterval(int)
+          }
+          try_times++
+          if (try_times >= 1000) {
+            wx.showToast({
+              title: '播放失败:(',
+              icon: 'none'
+            });
+            clearInterval(int)
+          }
         }
-        try_times ++
-        if(try_times>=1000){
-          wx.showToast({
-            title: '播放失败:(',
-            icon: 'none'
-          });
-          clearInterval(int)
-        }
+        let int = setInterval(try_play, 600)
+      } catch (e) {
+        wx.showToast({
+          title: '播放失败:(',
+          icon: 'none'
+        })
       }
-    let int = setInterval(try_play, 600)
-    } catch (e) {
-      wx.showToast({
-        title: '播放失败:(',
-        icon: 'none'
-      })
     }
   },
   operate_play: function (e) {
@@ -356,8 +374,11 @@ Page({
     if (that.data.playing) {
       that.pauseplaybackmusic()
     } else {
+      if (that.data.mode == 'one') {
+        wx.setStorageSync('singleid', { 'id': that.data.songciItem.id, 'url': that.data.audioUrl, 'title': that.data.songciItem.work_title, 'author': that.data.songciItem.work_author })
+      }
       that.playsound();
-      that.record_play()
+      that.record_play();
     }
   },
   record_play: function () {
@@ -425,7 +446,7 @@ Page({
     }
     var key = parseInt(that.data.audioId) + 1
     that.get_by_id(key, true)
-    setTimeout(()=>{
+    setTimeout(() => {
       wx.hideNavigationBarLoading()
       wx.stopPullDownRefresh()
     }, 700)
@@ -454,10 +475,12 @@ Page({
     backgroundAudioManager.coverImgUrl = 'http://a2.qpic.cn/psb?/V121Rqgy1YUsix/5XTZlkJ.N7a5wLN2X6xJypRkRbJH0Dy7THuk1HTKofQ!/b/dGEBAAAAAAAA&ek=1&kp=1&pt=0&bo=AAEAAQAAAAARFyA!&vuin=75124771&tm=1525960800&sce=60-1-1&rf=viewer_4'
     backgroundAudioManager.src = this.data.audioUrl
     backgroundAudioManager.startTime = this.data.seek2
-    this.setData({
-      playing: true
-    });
     backgroundAudioManager.seek(this.data.seek2)
+    setTimeout(() => {
+      this.setData({
+        playing: true
+      });
+    }, 500)
   },
 
   /**
@@ -528,9 +551,9 @@ Page({
     this.backgroundAudioManager.onTimeUpdate(() => {
       that.musicStart()
     });
-   setTimeout(()=>{
-     wx.hideLoading()
-   }, 500)
+    setTimeout(() => {
+      wx.hideLoading()
+    }, 500)
   },
   setCurrentPlaying: function () {
     var that = this
@@ -706,6 +729,6 @@ Page({
     });
     setTimeout(() => {
       that.playsound()
-    }, 1000)
+    }, 600)
   }
 });

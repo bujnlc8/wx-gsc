@@ -9,7 +9,8 @@ Page({
     historyplay: null,
     showhead: true,
     currentplayId: 0,
-    animationData: {}
+    animationData: {},
+    playinganimation: {}
   },
   getCurrentPlayId: function () {
     var that = this
@@ -24,9 +25,14 @@ Page({
           that.setData({
             currentplayId: results
           })
+          return true
         }
       }
     }
+    that.setData({
+      currentplayId: 0
+    })
+    return false
   },
   go2detail: function (e) {
     var id_ = e.target.dataset.id_
@@ -78,7 +84,7 @@ Page({
           var splits = data.content.split("。")
           var fuhao = '。'
           if (splits.length > 0) {
-            if (splits[0].indexOf('？')>=0){
+            if (splits[0].indexOf('？') >= 0) {
               fuhao = "？"
             }
             data.short_content = splits[0].split('？')[0]
@@ -158,7 +164,9 @@ Page({
         }
       });
     }
-    that.getCurrentPlayId();
+    setInterval(()=>{
+      that.getCurrentPlayId(); 
+    }, 500)
   },
   wxSearchInput: WxSearch.wxSearchInput,  // 输入变化时的操作
   wxSearchKeyTap: WxSearch.wxSearchKeyTap,  // 点击提示或者关键字、历史记录时的操作
@@ -257,7 +265,7 @@ Page({
         });
       }
     });
-    setTimeout(()=>{
+    setTimeout(() => {
       if (page == 'like') {
         wx.setNavigationBarTitle({
           title: '我的收藏'
@@ -322,22 +330,47 @@ Page({
       }
     });
     that.getCurrentPlayId()
-    var animation = wx.createAnimation({
+    var animation1 = wx.createAnimation({
       duration: 1000,
       timingFunction: 'ease',
     })
-    that.animation = animation
-    animation.scale(1, 1.5).rotate(360).step()
+    that.animation = animation1
+    animation1.scale(1, 1.5).rotate(360).step()
     that.setData({
-      animationData: animation.export()
+      animationData: animation1.export()
     })
+    this.setplayinganimation()
   },
-
+  setplayinganimation:function(){
+    var that = this
+    var animation = wx.createAnimation({
+      timingFunction: 'linear',
+      delay: 0,
+      transformOrigin: '50% 50% 0'
+    });
+    animation.rotate(30).step({ duration: 100 })
+    this.setData({
+      playinganimation: animation.export()
+    })
+    setTimeout(() => {
+      var n = 1
+      var int = setInterval(function () {
+        animation.rotate(180 * n).step({ duration: 600 })
+        this.setData({
+          playinganimation: animation.export()
+        })
+        n++;
+      }.bind(that), 500)
+      that.playingint = int
+    }, 200)
+  },
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-
+    if (this.playingint){
+      clearInterval(this.playingint)
+    }
   },
 
   /**
@@ -413,11 +446,11 @@ Page({
       });
       that.getData(that);
     }
-    if (that.data.page == 'main'){
+    if (that.data.page == 'main') {
       that.setData({
         page: 'like'
       });
-    }else{
+    } else {
       that.setData({
         page: 'main'
       });
@@ -440,8 +473,8 @@ Page({
   onShareAppMessage: function (res) {
     var q = this.data.wxSearchData.value
     return {
-      title: 'i古诗词--' + (q ? q :'我们都爱古诗词'),
-      path: '/pages/catalog/catalog' + (q?('?q='+q):''),
+      title: 'i古诗词--' + (q ? q : '我们都爱古诗词'),
+      path: '/pages/catalog/catalog' + (q ? ('?q=' + q) : ''),
       imageUrl: '/static/share4.jpg',
       success: function (res) {
         util.showSuccess('分享成功')
