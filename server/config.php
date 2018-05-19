@@ -42,7 +42,7 @@ $config = [
          */
         'region' => 'cn-sorth',
         // Bucket 名称
-        'fileBucket' => 'wafer',
+        'fileBucket' => 'qcloudtest-1256650966',
         // 文件夹
         'uploadFolder' => ''
     ],

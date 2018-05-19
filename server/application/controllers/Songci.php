@@ -1,4 +1,5 @@
 <?php
+require(dirname(__DIR__).'/text2audio/text2audio.php');
 defined('BASEPATH') or exit('No direct script access allowed');
 use \QCloud_WeApp_SDK\Mysql\Mysql as DB;
 
@@ -233,4 +234,32 @@ $s = join(',', $s);
         ]);
     }
         }
+
+    public function text2audio(){
+      $id = $this->uri->segment(3);
+      $result = DB::row('gsc', [
+                'content'
+            ], ' id ='.$id );
+      $text = '';
+      if($result){
+        $text = $result->content;
+      }
+      if($text){
+        $this->json([
+            'code' => 0,
+            'data' => [
+                'msg' => 'success',
+                'data' => text2audio($text)
+            ]
+        ]);
+      }else{
+        $this->json([
+            'code' => -1,
+            'data' => [
+                'msg' => 'success',
+                'data' => null
+            ]
+        ]);
+      }
+    }
 }

@@ -58,3 +58,4 @@ $route['user'] = 'user';
 $route['wechat'] = 'wechat';
 $route['songci/index'] = 'songci/index';
 $route['songci/query'] = 'songci/query';
+$route['songci/text2audio'] = 'songci/text2audio';
