@@ -242,7 +242,7 @@ $s = join(',', $s);
             ], ' id ='.$id );
       $text = '';
       if($result){
-        $text = $result->content;
+        $text = str_replace('\n','', $result->content);
       }
       if($text){
         $this->json([

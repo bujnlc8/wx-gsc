@@ -18,7 +18,47 @@ Page({
     slideValue: 0,
     mode: 'xunhuan',
     time2close: 0,
-    closeplaytime: 0
+    closeplaytime: 0,
+    text2audio: false,
+    text2audiourls: [],
+    text2audiotitle: '',
+    text2audioauthor: ''
+  },
+  text2audio:function(e){
+    var that = this
+    var id_  = e.target.dataset.id_
+    var title = e.target.dataset.title
+    var author = e.target.dataset.author
+    wx.request({
+      url: config.service.host+'/songci/text2audio/'+id_,
+      success:function(res){
+        if (res && res.statusCode==200 && res.data.code==0){
+          var urls = res.data.data.data
+          that.backgroundAudioManager.src = urls[0]
+          that.backgroundAudioManager.title = title
+          that.backgroundAudioManager.singer = author
+          that.backgroundAudioManager.coverImgUrl = that.data.poster
+          that.backgroundAudioManager.epname = 'i古诗词'
+          that.backgroundAudioManager.play()
+          that.setData({
+            text2audio: true,
+            text2audiourls: urls.slice(1),
+            text2audiotitle: title,
+            text2audioauthor: author
+          })
+        }else{
+          wx.showToast({
+            title: '网络异常~~',
+            icon: 'none'
+          })
+        }
+      },fail:function(e){
+        wx.showToast({
+          title: '网络异常~~',
+          icon: 'none'
+        })
+      }
+    })
   },
   setTimed: function () {
     var that = this
@@ -193,7 +233,11 @@ Page({
               current_time_show: '',
               seek2: 0,
               slideValue: 0,
-              playing: false
+              playing: false,
+              text2audio: false,
+              text2audiourls: [],
+              text2audiotitle: '',
+              text2audioauthor: ''
             });
             wx.setStorage({
               key: 'songci' + key + util.formatTime(new Date()),
@@ -257,7 +301,7 @@ Page({
         that.backgroundAudioManager.src = play_id_url.url
         that.backgroundAudioManager.title = play_id_url.title
         that.backgroundAudioManager.singer = play_id_url.author
-        that.backgroundAudioManager.coverImgUrl = 'http://m.qpic.cn/psb?/V121Rqgy1YUsix/IviqfBJYA85bdpCyovu1Pi2.YVOCku1MlgYcy4FbGv0!/b/dDEBAAAAAAAA&bo=7wHzAQAAAAARByw!&rf=viewer_4'
+        that.backgroundAudioManager.coverImgUrl = that.data.poster
         that.backgroundAudioManager.epname = 'i古诗词'
         that.backgroundAudioManager.play()
         that.record_play(play_id_url.id, play_id_url.title+'-'+play_id_url.author);
@@ -267,7 +311,7 @@ Page({
         that.backgroundAudioManager.title = that.data.songciItem.work_title
         that.backgroundAudioManager.epname = 'i古诗词'
         that.backgroundAudioManager.singer = that.data.songciItem.work_author
-        that.backgroundAudioManager.coverImgUrl = 'http://m.qpic.cn/psb?/V121Rqgy1YUsix/IviqfBJYA85bdpCyovu1Pi2.YVOCku1MlgYcy4FbGv0!/b/dDEBAAAAAAAA&bo=7wHzAQAAAAARByw!&rf=viewer_4'
+        that.backgroundAudioManager.coverImgUrl = that.data.poster
         that.backgroundAudioManager.play()
         that.record_play(that.data.songciItem.id, that.data.songciItem.work_title + '-'+that.data.songciItem.work_author);
       }
@@ -477,7 +521,7 @@ Page({
     backgroundAudioManager.title = this.data.songciItem.work_title
     backgroundAudioManager.epname = 'i古诗词'
     backgroundAudioManager.singer = this.data.songciItem.work_author
-    backgroundAudioManager.coverImgUrl = 'http://m.qpic.cn/psb?/V121Rqgy1YUsix/IviqfBJYA85bdpCyovu1Pi2.YVOCku1MlgYcy4FbGv0!/b/dDEBAAAAAAAA&bo=7wHzAQAAAAARByw!&rf=viewer_4'
+    backgroundAudioManager.coverImgUrl = this.data.poster
     backgroundAudioManager.src = this.data.audioUrl
     backgroundAudioManager.startTime = this.data.seek2
     backgroundAudioManager.seek(this.data.seek2)
@@ -521,10 +565,45 @@ Page({
     } catch (e) {
     }
     this.backgroundAudioManager.onEnded(() => {
-      that.do_operate_play('next', mode)
+      if(that.data.text2audio){
+        var urls = that.data.text2audiourls
+        if(urls.length==0){
+          that.backgroundAudioManager.stop()
+          that.setData({
+            text2audio: false
+          })
+          return
+        }
+        if(urls.length>0){
+          that.backgroundAudioManager.src = urls[0]
+          that.backgroundAudioManager.title = that.data.text2audiotitle
+          that.backgroundAudioManager.singer = that.data.text2audioauthor
+          that.backgroundAudioManager.coverImgUrl = that.data.poster
+          that.backgroundAudioManager.epname = 'i古诗词'
+          that.backgroundAudioManager.play()
+        }
+        if (urls.length > 1){
+          that.setData({
+            text2audio: true,
+            text2audiourls: urls.slice(1)
+          })
+        }else{
+            that.setData({
+              text2audio: true,
+              text2audiourls: [],
+              text2audiotitle: '',
+              text2audioauthor: ''
+            })
+        }
+      }else{
+        that.do_operate_play('next', mode)
+      }
     });
     this.backgroundAudioManager.onStop(() => {
-      that.pauseplaybackmusic()
+      wx.showToast({
+        title: '停止播放',
+        icon: 'none'
+      });
     });
     this.backgroundAudioManager.onError((e) => {
       that.setData({

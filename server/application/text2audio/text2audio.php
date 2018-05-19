@@ -8,6 +8,11 @@ $app_id = '1106917980';
 $app_key = 'iX90SNtsZZ4609sC';
 Configer::setAppInfo($app_id, $app_key);
 
+function getMillisecond() { 
+    list($s1, $s2) = explode(' ', microtime()); 
+    return (float)sprintf('%.0f', (floatval($s1) + floatval($s2)) * 1000); 
+}
+
 function text2audio($text) {
 	$count = mb_strlen($text, 'utf-8');
 	$text_split = array();
@@ -21,7 +26,7 @@ function text2audio($text) {
 			for ($index=0;$index<1000;$index++) {
 				$result = API::text2audio($text_split[$i]);
 				if($result){
-					$urls[$i] = upload_qcloud(time().'.mp3', $result)->get('ObjectURL');
+					$urls[$i] = upload_qcloud(getMillisecond().'.mp3', $result)->get('ObjectURL');
 					break;
 				}
 			}
