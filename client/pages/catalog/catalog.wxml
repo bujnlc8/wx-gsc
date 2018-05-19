@@ -5,9 +5,8 @@
     <view style='margin-top:10px;' wx:if="{{historyplay&&historyplay.length>0}}">
       <view style='margin-left:5px;font-size:12px;'>最近播放</view>
       <view style='border-bottom:1px solid #eee;'>
-        <text bindtap='go2detail' class='title myclick' data-id_='{{item.id}}' wx:for="{{historyplay}}" wx:key="{{item.id}}" style='border:1px solid #eee;display:inline-block;height:2em;line-height:2em;font-size:12px;padding:3px 4px;margin:4px;border-radis:2px;position:relative;'
-          wx:if="{{item.work_title}}">{{item.work_title}}-{{item.work_author}}
-     <text style='display:inline-block;width:40rpx;height:40rpx;border-radius:20rpx;background-color:#2BB630;text-align:center;line-height:40rpx;font-size:18rpx;position:absolute;top:-8px;right:-8px;opacity:0.8;color:white;'>{{item.playtimes}}</text>
+        <text bindtap='go2detail' class='title myclick' data-id_='{{item.id}}' wx:for="{{historyplay}}" wx:key="{{item.id}}" style='border:1px solid #eee;display:inline-block;height:2em;line-height:2em;font-size:12px;padding:3px 4px;margin:4px;border-radis:2px;position:relative;'>{{item.title}}
+     <text style='display:inline-block;width:40rpx;height:40rpx;border-radius:20rpx;background-color:#2BB630;text-align:center;line-height:40rpx;font-size:18rpx;position:absolute;top:-8px;right:-8px;opacity:0.8;color:white;'>{{item.times}}</text>
         </text>
       </view>
     </view>

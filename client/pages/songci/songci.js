@@ -217,7 +217,7 @@ Page({
     });
     setTimeout(() => {
       that.setCurrentPlaying()
-    }, 1500);
+    }, 600);
     if (!pull) {
       setTimeout(() => {
         wx.hideLoading()
@@ -257,15 +257,19 @@ Page({
         that.backgroundAudioManager.src = play_id_url.url
         that.backgroundAudioManager.title = play_id_url.title
         that.backgroundAudioManager.singer = play_id_url.author
+        that.backgroundAudioManager.coverImgUrl = 'http://m.qpic.cn/psb?/V121Rqgy1YUsix/IviqfBJYA85bdpCyovu1Pi2.YVOCku1MlgYcy4FbGv0!/b/dDEBAAAAAAAA&bo=7wHzAQAAAAARByw!&rf=viewer_4'
         that.backgroundAudioManager.epname = 'i古诗词'
         that.backgroundAudioManager.play()
+        that.record_play(play_id_url.id, play_id_url.title+'-'+play_id_url.author);
       } catch (e) {
         wx.setStorageSync('singleid', { 'id': that.data.songciItem.id, 'url': that.data.audioUrl, 'title': that.data.songciItem.work_title, 'author': that.data.songciItem.work_author })
         that.backgroundAudioManager.src = that.data.audioUrl
         that.backgroundAudioManager.title = that.data.songciItem.work_title
         that.backgroundAudioManager.epname = 'i古诗词'
         that.backgroundAudioManager.singer = that.data.songciItem.work_author
+        that.backgroundAudioManager.coverImgUrl = 'http://m.qpic.cn/psb?/V121Rqgy1YUsix/IviqfBJYA85bdpCyovu1Pi2.YVOCku1MlgYcy4FbGv0!/b/dDEBAAAAAAAA&bo=7wHzAQAAAAARByw!&rf=viewer_4'
         that.backgroundAudioManager.play()
+        that.record_play(that.data.songciItem.id, that.data.songciItem.work_title + '-'+that.data.songciItem.work_author);
       }
     } else {
       //随机播放
@@ -283,11 +287,11 @@ Page({
         var try_play = () => {
           if (that.data.songciItem.id == play_id) {
             that.playsound();
-            that.record_play();
+            that.record_play(play_id, that.data.songciItem.work_title + '-' + that.data.songciItem.work_author);
             clearInterval(int)
           }
           try_times++
-          if (try_times >= 1000) {
+          if (try_times >= 1200) {
             wx.showToast({
               title: '播放失败:(',
               icon: 'none'
@@ -378,21 +382,22 @@ Page({
         wx.setStorageSync('singleid', { 'id': that.data.songciItem.id, 'url': that.data.audioUrl, 'title': that.data.songciItem.work_title, 'author': that.data.songciItem.work_author })
       }
       that.playsound();
-      that.record_play();
+      that.record_play(that.data.songciItem.id, that.data.songciItem.work_title+'-'+that.data.songciItem.work_author);
     }
   },
-  record_play: function () {
+  record_play: function (id_, title) {
     var that = this
     var historyplay = wx.getStorageSync('historyplay')
     if (!historyplay) {
       historyplay = {}
     }
-    if (historyplay.hasOwnProperty(that.data.songciItem.id + '')) {
-      that.data.songciItem.playtimes = historyplay[that.data.songciItem.id + ''].playtimes + 1
+    if (historyplay.hasOwnProperty(id_+'')) {
+      var old_data = historyplay[id_]
+      old_data['times'] += 1
+      historyplay[id_] = old_data
     } else {
-      that.data.songciItem.playtimes = 1
+      historyplay[id_] = {'id':id_, 'title': title, 'times': 1}
     }
-    historyplay[that.data.songciItem.id + ''] = that.data.songciItem
     wx.setStorageSync('historyplay', historyplay)
   },
   search_: function (e) {
@@ -472,7 +477,7 @@ Page({
     backgroundAudioManager.title = this.data.songciItem.work_title
     backgroundAudioManager.epname = 'i古诗词'
     backgroundAudioManager.singer = this.data.songciItem.work_author
-    backgroundAudioManager.coverImgUrl = 'http://a2.qpic.cn/psb?/V121Rqgy1YUsix/5XTZlkJ.N7a5wLN2X6xJypRkRbJH0Dy7THuk1HTKofQ!/b/dGEBAAAAAAAA&ek=1&kp=1&pt=0&bo=AAEAAQAAAAARFyA!&vuin=75124771&tm=1525960800&sce=60-1-1&rf=viewer_4'
+    backgroundAudioManager.coverImgUrl = 'http://m.qpic.cn/psb?/V121Rqgy1YUsix/IviqfBJYA85bdpCyovu1Pi2.YVOCku1MlgYcy4FbGv0!/b/dDEBAAAAAAAA&bo=7wHzAQAAAAARByw!&rf=viewer_4'
     backgroundAudioManager.src = this.data.audioUrl
     backgroundAudioManager.startTime = this.data.seek2
     backgroundAudioManager.seek(this.data.seek2)
@@ -480,7 +485,7 @@ Page({
       this.setData({
         playing: true
       });
-    }, 500)
+    }, 300)
   },
 
   /**
@@ -569,10 +574,14 @@ Page({
             that.setData({
               playing: true
             })
+            return
           }
         }
       }
     }
+    that.setData({
+      playing: false
+    });
   },
   get_music_list: function () {
     if (this.data.audioId > 0) {

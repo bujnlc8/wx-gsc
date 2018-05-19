@@ -164,9 +164,10 @@ Page({
         }
       });
     }
-    setInterval(()=>{
+    var currentInterval = setInterval(()=>{
       that.getCurrentPlayId(); 
-    }, 500)
+    }, 450)
+    that.currentInterval =currentInterval
   },
   wxSearchInput: WxSearch.wxSearchInput,  // 输入变化时的操作
   wxSearchKeyTap: WxSearch.wxSearchKeyTap,  // 点击提示或者关键字、历史记录时的操作
@@ -307,12 +308,12 @@ Page({
             historylist.push(historyplay[x])
           }
           historylist.sort((a, b) => {
-            return parseInt(b.playtimes) - parseInt(a.playtimes)
+            return parseInt(b.times) - parseInt(a.times)
           })
           historylist = historylist.slice(0, 10)
           for (var x in historylist) {
-            if (historylist[x].playtimes > 99) {
-              historylist[x].playtimes = '99+'
+            if (historylist[x].times > 99) {
+              historylist[x].times = '99+'
             }
           }
           that.setData({
@@ -371,13 +372,21 @@ Page({
     if (this.playingint){
       clearInterval(this.playingint)
     }
+    if (this.currentInterval){
+      clearInterval(this.currentInterval)
+    }
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    if (this.playingint) {
+      clearInterval(this.playingint)
+    }
+    if (this.currentInterval) {
+      clearInterval(this.currentInterval)
+    }
   },
 
   /**
