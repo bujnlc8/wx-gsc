@@ -100,7 +100,7 @@ class API
 		$url = 'https://api.ai.qq.com/fcgi-bin/aai/aai_tts';
 		$params = array(
 			'app_id'     =>  Configer::getAppId(),
-			'speaker'    => '7',
+			'speaker'    => '6',
 			'format'     => '3',//mp3格式
 			'volume'     => '0',
 			'speed'      => '100',

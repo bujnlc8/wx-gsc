@@ -17,16 +17,16 @@ function text2audio($text) {
 	$count = mb_strlen($text, 'utf-8');
 	$text_split = array();
 	$urls = array();
-	for($index=0; $index * 49 < $count; $index++){
-		$text_split[$index] = mb_substr(
-		$text, 49 * $index, 49 * ($index+1), 'utf-8');
+	for($index=0; $index * 50 < $count; $index++){
+		$text_split[] = mb_substr(
+		$text, 50 * $index, 50, 'utf-8');
 	}
 	for($i=0; $i< count($text_split); $i++){
-		//失败率好高, 循环调用1000次
-			for ($index=0;$index<1000;$index++) {
+		//失败率好高, 循环调用20次
+			for ($index=0;$index<20;$index++) {
 				$result = API::text2audio($text_split[$i]);
 				if($result){
-					$urls[$i] = upload_qcloud(getMillisecond().'.mp3', $result)->get('ObjectURL');
+					$urls[] = upload_qcloud(getMillisecond().rand(0,10000).'.mp3', $result)->get('ObjectURL');
 					break;
 				}
 			}

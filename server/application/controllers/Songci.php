@@ -237,12 +237,14 @@ $s = join(',', $s);
 
     public function text2audio(){
       $id = $this->uri->segment(3);
-      $result = DB::row('gsc', [
+      $result = DB::row('gsc', ['work_title', 'work_author',
                 'content'
             ], ' id ='.$id );
       $text = '';
       if($result){
-        $text = str_replace('\n','', $result->content);
+        $text = str_replace('\n','',$result->work_title.'。'.$result->work_author.'。'.$result->content);
+        $text = str_replace('\t','',$text);
+        $text = str_replace('\n\t','',$text);
       }
       if($text){
         $this->json([
