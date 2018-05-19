@@ -16,7 +16,6 @@ Page({
     current_time_show: '',
     seek2: 0,
     slideValue: 0,
-    mode: 'xunhuan',
     time2close: 0,
     closeplaytime: 0,
     text2audio: false,
@@ -41,6 +40,10 @@ Page({
             wx.hideLoading();
             return
           }
+          wx.setStorageSync('play_mode', 'hc')
+          that.setData({
+            mode: 'hc'
+          })
           that.backgroundAudioManager.src = urls[0]
           that.backgroundAudioManager.title = title
           that.backgroundAudioManager.singer = author
@@ -136,6 +139,13 @@ Page({
     //xunhuan->one->shuffle->xunhuan
     var mode = "xunhuan"
     var that = this
+    if(this.data.mode=='hc'){
+      wx.showToast({
+        title: '请等待合成语音播放完毕...',
+        icon: 'none'
+      })
+      return
+    }
     if (this.data.mode == 'xunhuan') {
       this.setData({
         mode: "one"
@@ -243,11 +253,7 @@ Page({
               current_time_show: '',
               seek2: 0,
               slideValue: 0,
-              playing: false,
-              text2audio: false,
-              text2audiourls: [],
-              text2audiotitle: '',
-              text2audioauthor: ''
+              playing: false
             });
             wx.setStorage({
               key: 'songci' + key + util.formatTime(new Date()),
@@ -515,6 +521,7 @@ Page({
    */
   onLoad: function (options) {
     var that = this
+    that.get_play_mode()
     that.setData({
       seek2: 0
     })
@@ -614,7 +621,14 @@ Page({
         }
       }else{
         var mode = that.get_play_mode()
-        that.do_operate_play('next', mode)
+        if(mode!='hc'){
+          that.do_operate_play('next', mode)
+        }else{
+          wx.setStorageSync('play_mode', 'xunhuan')
+          that.setData({
+            mode: 'xunhuan'
+          })
+        }
       }
     });
     this.backgroundAudioManager.onStop(() => {
@@ -667,7 +681,7 @@ Page({
       if (audioUrl) {
         var re = /[0-9]+\.m4a/g
         var results = audioUrl.match(re)
-        if (results.length > 0) {
+        if (results && results.length > 0) {
           results = results[0].slice(0, -4)
           if (that.data.audioId == results) {
             that.setData({

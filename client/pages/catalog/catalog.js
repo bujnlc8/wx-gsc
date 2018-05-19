@@ -20,7 +20,7 @@ Page({
       if (audioUrl) {
         var re = /[0-9]+\.m4a/g
         var results = audioUrl.match(re)
-        if (results.length > 0) {
+        if (results && results.length > 0) {
           results = results[0].slice(0, -4)
           that.setData({
             currentplayId: results

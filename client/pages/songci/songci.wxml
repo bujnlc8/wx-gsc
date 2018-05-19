@@ -2,7 +2,7 @@
 <view class='songci container'>
   <view  class='title'>
     {{songciItem.work_title}}
-    <image wx:if="{{songciItem.audio_id==0 && songciItem.content.length<500}}" src='../../static/sound.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;'  bindtap='text2audio' data-id_="{{songciItem.id}}" data-title="{{songciItem.work_title}}"  data-author="{{songciItem.work_author}}"></image>
+    <image wx:if="{{songciItem.audio_id==0 && songciItem.content.length<1000}}" src='../../static/sound.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;'  bindtap='text2audio' data-id_="{{songciItem.id}}" data-title="{{songciItem.work_title}}"  data-author="{{songciItem.work_author}}"></image>
   </view>
   <view wx:if="{{songciItem.work_dynasty}}" class='myclick author' data-q='{{songciItem.work_author}}' data-id_='{{songciItem.id}}' bindtap='search_'>
     [{{songciItem.work_dynasty}}] {{songciItem.work_author}}
@@ -30,7 +30,7 @@
     </view>
     <view style='flex:45;text-align:left;position:relative;'>
       <image src='../../static/next_music.png' class="operate_music" bindtap='operate_play' data-key='next'></image>
-      <image src='../../static/{{mode}}.png' class="operate_music" bindtap='change_mode' style='margin-left:15px;'></image>
+      <image wx:if="{{mode}}" src='../../static/{{mode}}.png' class="operate_music" bindtap='change_mode' style='margin-left:15px;'></image>
       <image src='../../static/timed.png' class="operate_music" bindtap='setTimed' style='margin-left:15px;'>
       </image>
       <text wx:if="{{time2close!=0}}" style='text-align:center;line-height:2em;display:inline-block;width:2em;height:2em;border-radius:1em;font-size:9px;color:white;background-color:#BB7E7E;opacity:0.8;position:absolute;top:0px;margin-left:-8px;'>{{closeplaytime}}</text>
