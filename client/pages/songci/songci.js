@@ -19,23 +19,25 @@ Page({
     time2close: 0,
     closeplaytime: 0
   },
-  text2audio:function(e){
+  text2audio: function (e) {
     var that = this
-    var id_  = e.target.dataset.id_
+    var id_ = e.target.dataset.id_
     var title = e.target.dataset.title
     var author = e.target.dataset.author
     wx.showLoading({
       title: '音频加载中...',
     })
     wx.request({
-      url: config.service.host+'/songci/text2audio/'+id_,
-      success:function(res){
-        if (res && res.statusCode==200 && res.data.code==0){
+      url: config.service.host + '/songci/text2audio/' + id_,
+      success: function (res) {
+        if (res && res.statusCode == 200 && res.data.code == 0) {
           var urls = res.data.data.data
-          if(!urls || urls.length==0){
+          if (!urls || urls.length == 0) {
             wx.hideLoading();
             return
           }
+          var old_play_mode = that.get_play_mode();
+          wx.setStorageSync('old_play_mode', old_play_mode);
           wx.setStorageSync('play_mode', 'hc')
           that.setData({
             mode: 'hc'
@@ -53,13 +55,13 @@ Page({
           setTimeout(() => {
             wx.hideLoading();
           }, 500)
-        }else{
+        } else {
           wx.showToast({
             title: '网络异常~~',
             icon: 'none'
           })
         }
-      },fail:function(e){
+      }, fail: function (e) {
         wx.showToast({
           title: '网络异常~~',
           icon: 'none'
@@ -133,7 +135,7 @@ Page({
     //xunhuan->one->shuffle->xunhuan
     var that = this
     var mode = "xunhuan"
-    if(this.data.mode=='hc'){
+    if (this.data.mode == 'hc') {
       wx.showToast({
         title: '请等待合成语音播放完毕...',
         icon: 'none'
@@ -226,7 +228,7 @@ Page({
             }
             show_content = show_content.replace(/\n/g, "\n&emsp;&emsp;")
             show_content = show_content.replace(/\t/g, "\n&emsp;&emsp;")
-            if (work.id % 2 == 0) {
+            if (work.id % 4 != 0) {
               var url = config.neteaseAudioUrl
             } else {
               var url = config.songciAudioUrl
@@ -249,10 +251,12 @@ Page({
               slideValue: 0,
               playing: false
             });
-            wx.setStorage({
-              key: 'songci' + key + util.formatTime(new Date()),
-              data: that.data,
-            })
+            if (work.like == 1) {
+              wx.setStorage({
+                key: 'songci' + key + util.formatTime(new Date()),
+                data: that.data,
+              })
+            }
           }
         });
       }
@@ -265,13 +269,10 @@ Page({
     that.setData({
       closeplaytime: closeplaytime && closeplaytime > 0 ? closeplaytime : 0
     });
-    var play_mode = wx.getStorageSync('play_mode')
-    that.setData({
-      mode: play_mode ? play_mode : 'xunhuan'
-    });
     setTimeout(() => {
-      that.setCurrentPlaying()
-    }, 600);
+      that.setCurrentPlaying();
+      that.get_play_mode();
+    }, 400);
     if (!pull) {
       setTimeout(() => {
         wx.hideLoading()
@@ -314,7 +315,7 @@ Page({
         that.backgroundAudioManager.coverImgUrl = that.data.poster
         that.backgroundAudioManager.epname = 'i古诗词'
         that.backgroundAudioManager.play()
-        that.record_play(play_id_url.id, play_id_url.title+'-'+play_id_url.author);
+        that.record_play(play_id_url.id, play_id_url.title + '-' + play_id_url.author);
       } catch (e) {
         wx.setStorageSync('singleid', { 'id': that.data.songciItem.id, 'url': that.data.audioUrl, 'title': that.data.songciItem.work_title, 'author': that.data.songciItem.work_author })
         that.backgroundAudioManager.src = that.data.audioUrl
@@ -323,7 +324,7 @@ Page({
         that.backgroundAudioManager.singer = that.data.songciItem.work_author
         that.backgroundAudioManager.coverImgUrl = that.data.poster
         that.backgroundAudioManager.play()
-        that.record_play(that.data.songciItem.id, that.data.songciItem.work_title + '-'+that.data.songciItem.work_author);
+        that.record_play(that.data.songciItem.id, that.data.songciItem.work_title + '-' + that.data.songciItem.work_author);
       }
     } else {
       //随机播放
@@ -430,7 +431,7 @@ Page({
   playbackmusic: function (e) {
     var that = this
     var mode = wx.getStorageSync('play_mode')
-    if(mode=='hc'){
+    if (mode == 'hc') {
       wx.setStorageSync('play_mode', 'xunhuan')
       that.setData({
         mode: 'xunhuan'
@@ -443,7 +444,7 @@ Page({
         wx.setStorageSync('singleid', { 'id': that.data.songciItem.id, 'url': that.data.audioUrl, 'title': that.data.songciItem.work_title, 'author': that.data.songciItem.work_author })
       }
       that.playsound();
-      that.record_play(that.data.songciItem.id, that.data.songciItem.work_title+'-'+that.data.songciItem.work_author);
+      that.record_play(that.data.songciItem.id, that.data.songciItem.work_title + '-' + that.data.songciItem.work_author);
     }
   },
   record_play: function (id_, title) {
@@ -452,12 +453,12 @@ Page({
     if (!historyplay) {
       historyplay = {}
     }
-    if (historyplay.hasOwnProperty(id_+'')) {
+    if (historyplay.hasOwnProperty(id_ + '')) {
       var old_data = historyplay[id_]
       old_data['times'] += 1
       historyplay[id_] = old_data
     } else {
-      historyplay[id_] = {'id':id_, 'title': title, 'times': 1}
+      historyplay[id_] = { 'id': id_, 'title': title, 'times': 1 }
     }
     wx.setStorageSync('historyplay', historyplay)
   },
@@ -549,7 +550,7 @@ Page({
       });
     }, 300)
   },
-  get_play_mode:function(){
+  get_play_mode: function () {
     var that = this
     try {
       var mode = wx.getStorageSync('play_mode')
@@ -561,7 +562,18 @@ Page({
     })
     return mode
   },
-
+  reset_playmode: function () {
+    var that = this
+    try {
+      var old_play_mode = wx.getStorageSync('old_play_mode')
+    } catch (e) {
+      old_play_mode = 'xunhuan'
+    }
+    wx.setStorageSync('play_mode', old_play_mode);
+    that.setData({
+      mode: old_play_mode
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -589,15 +601,15 @@ Page({
     }
     this.backgroundAudioManager.onEnded(() => {
       var text2audio = false
-      try{
+      try {
         text2audio = wx.getStorageSync('text2audio')
-      }catch($e){
+      } catch ($e) {
       }
-      if (text2audio){
+      if (text2audio) {
         var urls = wx.getStorageSync('text2audiourls')
         var title = wx.getStorageSync('text2audiotitle')
         var author = wx.getStorageSync('text2audioauthor')
-        if(urls.length>0){
+        if (urls.length > 0) {
           that.backgroundAudioManager.src = urls[0]
           that.backgroundAudioManager.title = title
           that.backgroundAudioManager.singer = author
@@ -605,22 +617,20 @@ Page({
           that.backgroundAudioManager.epname = 'i古诗词'
           that.backgroundAudioManager.play()
         }
-        if (urls.length > 1){
+        if (urls.length > 1) {
           wx.setStorageSync('text2audio', true)
           wx.setStorageSync('text2audiourls', urls.slice(1))
-        }else{
+        } else {
           wx.setStorageSync('text2audio', false)
           wx.setStorageSync('text2audiourls', [])
+          that.reset_playmode();
         }
-      }else{
+      } else {
         var mode = that.get_play_mode()
-        if(mode!='hc'){
+        if (mode != 'hc') {
           that.do_operate_play('next', mode)
-        }else{
-          wx.setStorageSync('play_mode', 'xunhuan')
-          that.setData({
-            mode: 'xunhuan'
-          })
+        } else {
+          that.reset_playmode()
         }
       }
     });

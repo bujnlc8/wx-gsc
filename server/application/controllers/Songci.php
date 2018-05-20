@@ -1,5 +1,6 @@
 <?php
 require(dirname(__DIR__).'/text2audio/text2audio.php');
+require(dirname(__DIR__).'/text2audio/text2audiobaidu.php');
 defined('BASEPATH') or exit('No direct script access allowed');
 use \QCloud_WeApp_SDK\Mysql\Mysql as DB;
 
@@ -242,16 +243,21 @@ $s = join(',', $s);
             ], ' id ='.$id );
       $text = '';
       if($result){
-        $text = str_replace('\n','',$result->work_title.'。'.$result->work_author.'。'.$result->content);
+        $text = str_replace('\n','',$result->work_title.'。。'.$result->work_author.'。。'.$result->content);
         $text = str_replace('\t','',$text);
         $text = str_replace('\n\t','',$text);
       }
       if($text){
+        if(mb_strlen($text, 'utf-8')<50){
+          $data = text2audio($text);
+        }else{
+          $data = text2audiobaidu($text);
+        }
         $this->json([
             'code' => 0,
             'data' => [
                 'msg' => 'success',
-                'data' => text2audio($text)
+                'data' => $data
             ]
         ]);
       }else{
