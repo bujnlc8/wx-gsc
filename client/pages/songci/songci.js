@@ -432,10 +432,7 @@ Page({
     var that = this
     var mode = wx.getStorageSync('play_mode')
     if (mode == 'hc') {
-      wx.setStorageSync('play_mode', 'xunhuan')
-      that.setData({
-        mode: 'xunhuan'
-      })
+      that.reset_playmode();
     }
     if (that.data.playing) {
       that.pauseplaybackmusic()
