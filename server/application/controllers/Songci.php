@@ -239,11 +239,15 @@ $s = join(',', $s);
     public function text2audio(){
       $id = $this->uri->segment(3);
       $result = DB::row('gsc', ['work_title', 'work_author',
-                'content'
+                'content', 'foreword'
             ], ' id ='.$id );
       $text = '';
       if($result){
-        $text = str_replace('\n','',$result->work_title.'。。'.$result->work_author.'。。'.$result->content);
+        if(!$result->foreword){
+$text = str_replace('\n','',$result->work_title.'。。'.$result->work_author.'。。'.$result->content);
+        }else{
+          $text = str_replace('\n','',$result->work_title.'。。'.$result->work_author.'。。'.$result->foreword.'。。'.$result->content);
+        }
         $text = str_replace('\t','',$text);
         $text = str_replace('\n\t','',$text);
       }

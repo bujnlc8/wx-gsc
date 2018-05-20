@@ -554,8 +554,11 @@ Page({
     } catch (e) {
       mode = 'xunhuan'
     }
+    if(!mode){
+      mode = 'xunhuan'
+    }
     that.setData({
-      mode: mode ? mode : "xunhuan"
+      mode: mode
     })
     return mode
   },
@@ -613,13 +616,10 @@ Page({
           that.backgroundAudioManager.coverImgUrl = that.data.poster
           that.backgroundAudioManager.epname = 'i古诗词'
           that.backgroundAudioManager.play()
-        }
-        if (urls.length > 1) {
           wx.setStorageSync('text2audio', true)
           wx.setStorageSync('text2audiourls', urls.slice(1))
-        } else {
+        }else{
           wx.setStorageSync('text2audio', false)
-          wx.setStorageSync('text2audiourls', [])
           that.reset_playmode();
         }
       } else {
