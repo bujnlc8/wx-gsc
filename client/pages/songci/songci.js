@@ -17,11 +17,7 @@ Page({
     seek2: 0,
     slideValue: 0,
     time2close: 0,
-    closeplaytime: 0,
-    text2audio: false,
-    text2audiourls: [],
-    text2audiotitle: '',
-    text2audioauthor: ''
+    closeplaytime: 0
   },
   text2audio:function(e){
     var that = this
@@ -50,12 +46,10 @@ Page({
           that.backgroundAudioManager.coverImgUrl = that.data.poster
           that.backgroundAudioManager.epname = 'i古诗词'
           that.backgroundAudioManager.play()
-          that.setData({
-            text2audio: true,
-            text2audiourls: urls.slice(1),
-            text2audiotitle: title,
-            text2audioauthor: author
-          })
+          wx.setStorageSync('text2audio', true)
+          wx.setStorageSync('text2audiourls', urls.slice(1))
+          wx.setStorageSync('text2audiotitle', title)
+          wx.setStorageSync('text2audioauthor', author)
           setTimeout(() => {
             wx.hideLoading();
           }, 500)
@@ -137,14 +131,14 @@ Page({
   },
   change_mode: function () {
     //xunhuan->one->shuffle->xunhuan
-    var mode = "xunhuan"
     var that = this
+    var mode = "xunhuan"
     if(this.data.mode=='hc'){
       wx.showToast({
         title: '请等待合成语音播放完毕...',
         icon: 'none'
       })
-      return
+      return false
     }
     if (this.data.mode == 'xunhuan') {
       this.setData({
@@ -406,7 +400,7 @@ Page({
                 songciItem: songciItem
               })
               wx.removeStorage({
-                key: 'songci' + songciItem.id
+                key: 'songci' + songciItem.id + util.formatTime(new Date())
               })
             }
           }
@@ -435,6 +429,13 @@ Page({
   },
   playbackmusic: function (e) {
     var that = this
+    var mode = wx.getStorageSync('play_mode')
+    if(mode=='hc'){
+      wx.setStorageSync('play_mode', 'xunhuan')
+      that.setData({
+        mode: 'xunhuan'
+      })
+    }
     if (that.data.playing) {
       that.pauseplaybackmusic()
     } else {
@@ -552,12 +553,12 @@ Page({
     var that = this
     try {
       var mode = wx.getStorageSync('play_mode')
-      that.setData({
-        mode: mode ? mode : "xunhuan"
-      })
     } catch (e) {
       mode = 'xunhuan'
     }
+    that.setData({
+      mode: mode ? mode : "xunhuan"
+    })
     return mode
   },
 
@@ -587,37 +588,29 @@ Page({
     } catch (e) {
     }
     this.backgroundAudioManager.onEnded(() => {
-      if(that.data.text2audio){
-        var urls = that.data.text2audiourls
-        if(urls.length==0){
-          that.setData({
-            text2audio: false
-          })
-          setTimeout(()=>{
-            that.backgroundAudioManager.stop()
-          },500)
-          return
-        }
+      var text2audio = false
+      try{
+        text2audio = wx.getStorageSync('text2audio')
+      }catch($e){
+      }
+      if (text2audio){
+        var urls = wx.getStorageSync('text2audiourls')
+        var title = wx.getStorageSync('text2audiotitle')
+        var author = wx.getStorageSync('text2audioauthor')
         if(urls.length>0){
           that.backgroundAudioManager.src = urls[0]
-          that.backgroundAudioManager.title = that.data.text2audiotitle
-          that.backgroundAudioManager.singer = that.data.text2audioauthor
+          that.backgroundAudioManager.title = title
+          that.backgroundAudioManager.singer = author
           that.backgroundAudioManager.coverImgUrl = that.data.poster
           that.backgroundAudioManager.epname = 'i古诗词'
           that.backgroundAudioManager.play()
         }
         if (urls.length > 1){
-          that.setData({
-            text2audio: true,
-            text2audiourls: urls.slice(1)
-          })
+          wx.setStorageSync('text2audio', true)
+          wx.setStorageSync('text2audiourls', urls.slice(1))
         }else{
-            that.setData({
-              text2audio: true,
-              text2audiourls: [],
-              text2audiotitle: '',
-              text2audioauthor: ''
-            })
+          wx.setStorageSync('text2audio', false)
+          wx.setStorageSync('text2audiourls', [])
         }
       }else{
         var mode = that.get_play_mode()

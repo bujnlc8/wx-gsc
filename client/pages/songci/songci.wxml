@@ -2,7 +2,7 @@
 <view class='songci container'>
   <view  class='title'>
     {{songciItem.work_title}}
-    <image wx:if="{{songciItem.audio_id==0 && songciItem.content.length<1000}}" src='../../static/sound.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;'  bindtap='text2audio' data-id_="{{songciItem.id}}" data-title="{{songciItem.work_title}}"  data-author="{{songciItem.work_author}}"></image>
+    <image wx:if="{{songciItem.audio_id==0 && songciItem.content.length<1000}}" src='../../static/hc.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;'  bindtap='text2audio' data-id_="{{songciItem.id}}" data-title="{{songciItem.work_title}}"  data-author="{{songciItem.work_author}}"></image>
   </view>
   <view wx:if="{{songciItem.work_dynasty}}" class='myclick author' data-q='{{songciItem.work_author}}' data-id_='{{songciItem.id}}' bindtap='search_'>
     [{{songciItem.work_dynasty}}] {{songciItem.work_author}}

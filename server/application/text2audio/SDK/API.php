@@ -103,7 +103,7 @@ class API
 			'speaker'    => '6',
 			'format'     => '3',//mp3格式
 			'volume'     => '0',
-			'speed'      => '100',
+			'speed'      => '95',
 			'text'       => $text,
 			'aht'        => '0',
 			'apc'        => '58',
