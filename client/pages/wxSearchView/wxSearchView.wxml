@@ -4,8 +4,8 @@
     <view class="weui-search-bar__box">
       <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
       <input type="text" class="weui-search-bar__input" placeholder="请输入查询内容" value="{{wxSearchData.value}}" bindinput="wxSearchInput" bindconfirm="wxSearchConfirm" />
-      <view class="weui-icon-clear" wx:if="{{wxSearchData.value.length > 0}}" bindtap="wxSearchClear">
-        <icon type="clear" size="18"></icon>
+      <view class="weui-icon-clear" wx:if="{{wxSearchData.value && wxSearchData.value.length > 0}}">
+        <icon type="clear" size="20" bindtap="wxSearchClear"></icon>
       </view>
     </view>
   </view>
@@ -28,8 +28,7 @@
     <view wx:if="{{wxSearchData.his[0]}}" class="wxSearchHistory" style="display:{{wxSearchData.value.length>0 ? 'none':'block'}}">
       <view class="wxSearchHistoryItem">
         <text class="wxSearchHistoryItemTitle">搜索记录</text>
-        <!-- <text class="wxSearchHistoryItemDel" bindtap="wxSearchDeleteAll">删除</text> -->
-        <icon type="clear" bindtap="wxSearchDeleteAll" size="21" />
+        <icon type="clear" bindtap="wxSearchDeleteAll" size="20" />
       </view>
       <view class="wxSearchKeyList">
         <block wx:for="{{wxSearchData.his}}" wx:key="his">

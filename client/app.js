@@ -10,6 +10,7 @@ App({onLaunch(){
   }
   try{
       var today = util.formatTime(new Date())
+      open_id = wx.getStorageSync('user_open_id')
       today = today.replace(/-/g, '')
       var historyplay = wx.getStorageSync('historyplay')
       var today_clear = wx.getStorageSync('clear_1' + today)
@@ -24,5 +25,11 @@ App({onLaunch(){
         key: 'historyplay',
         data: historyplay
       })
+      if(open_id){
+        wx.setStorage({
+          key: 'user_open_id',
+          data: open_id
+        })
+      }
   }catch(e){}
 }});

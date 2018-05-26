@@ -4,7 +4,7 @@ var util = require('../../utils/util.js')
 var WxSearch = require('../wxSearchView/wxSearchView.js');
 Page({
   data: {
-    items: [],
+    gscitems: [],
     page: 'main',
     historyplay: null,
     showhead: true,
@@ -55,7 +55,7 @@ Page({
           that.getAllData(that);
         } else {
           that.setData({
-            items: items,
+            gscitems: items,
           })
         }
       },
@@ -95,7 +95,7 @@ Page({
           dd.push(data)
         }
         context.setData({
-          items: dd,
+          gscitems: dd,
         });
         wx.setStorage({
           key: "songciItems" + util.formatTime(new Date()),
@@ -154,7 +154,7 @@ Page({
               title: '加载中...',
             })
             that.setData({
-              items: items,
+              gscitems: items,
             })
             wx.hideLoading();
           }
@@ -196,7 +196,7 @@ Page({
           return
         }
         that.setData({
-          items: data,
+          gscitems: data,
         });
         if (data.length == 0) {
           util.showSuccess('没有相关内容')
@@ -246,7 +246,7 @@ Page({
               dd.push(data)
             }
             that.setData({
-              items: dd
+              gscitems: dd
             });
             wx.setStorage({
               key: key,
@@ -442,7 +442,7 @@ Page({
             dd.push(data)
           }
           that.setData({
-            items: dd
+            gscitems: dd
           })
         }
       });
@@ -482,7 +482,7 @@ Page({
   onShareAppMessage: function (res) {
     var q = this.data.wxSearchData.value
     return {
-      title: 'i古诗词--' + (q ? q : '我们都爱古诗词'),
+      title: 'i古诗词-' + (q ? q : '我们都爱古诗词'),
       path: '/pages/catalog/catalog' + (q ? ('?q=' + q) : ''),
       imageUrl: '/static/share4.jpg',
       success: function (res) {

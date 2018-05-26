@@ -100,6 +100,8 @@ var userLogin = function(){
           }
         }
       })
+    },fail:function(e){
+      console.log(e)
     }
   });
 }

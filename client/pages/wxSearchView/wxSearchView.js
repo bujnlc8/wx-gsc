@@ -34,7 +34,7 @@ function init(that, hotKeys, tipKeys, searchFunction, goBackFunction) {
   __goBackFunction = goBackFunction;
 
   var temData = {};
-  var barHeight = 43;
+  var barHeight = 30;
   var view = {
     barHeight: barHeight
   }
@@ -111,6 +111,7 @@ function wxSearchConfirm(e) {
 }
 
 function search(inputValue) {
+  console.log(inputValue)
   if (inputValue && inputValue.length > 0) {
     // 添加历史记录
     if (inputValue!='音频'){

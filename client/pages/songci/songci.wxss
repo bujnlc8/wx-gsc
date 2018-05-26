@@ -41,15 +41,9 @@ audio {
   height: 2px;
 }
 
-.songci {
-  margin-left: 35rpx;
-  margin-right: 35rpx;
-}
-
 .title {
   font-size: 40rpx;
   text-align: center;
-  margin-top: 50rpx;
 }
 
 .title :hover{
@@ -72,4 +66,9 @@ audio {
   margin-top: 15rpx;
   text-indent: 60rpx;
   font-size: 32rpx;
+}
+.songci{
+  min-height: 100%;
+  padding-left: 35rpx;
+  padding-right: 35rpx;
 }

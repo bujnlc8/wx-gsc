@@ -2,13 +2,13 @@
 .wxSearch{
   width: 100%;
   /* border-top: 1px #eee solid; */
-  background-color: rgba(200, 200, 200, 0.1);
-  z-index: 1;
+   background-color: rgba(200, 200, 200);
+  z-index: 999;
 }
 
 /** 搜索框下面的提示区域 */
 .wxSearchInner{
-  background-color: #fff;
+   /* background-color: #fff;  */
 }
 
 /** 搜索热点标题 */
@@ -41,11 +41,11 @@
   flex: 0 0 16%;
   font-size: 11px;
   text-align: center;
-  border: 1px solid #eee;
+  /* border: 1px solid #eee; */
   margin: 4px;
   padding: 1px 2px;
   border-radius: 3px;
-  background-color: rgba(200, 200, 200, 0.1);
+  background-color: rgba(200, 200, 200, 0.3);
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap
@@ -54,7 +54,7 @@
 /** 搜索记录标题栏 */
 .wxSearchHistoryItem{
   padding-left: 5px;
-  padding-right: 5px;
+  padding-right: 12px;
   display: flex;
   margin-bottom: -10px;
 }
@@ -120,7 +120,7 @@
   flex: auto;
   border-radius: 5px;
   background: #fff;
-  border: 1rpx solid #e6e6ea;
+  border: 1rpx solid #FCF9F4;
 }
 
 .weui-search-bar__box {
@@ -133,16 +133,16 @@
 }
 
 .weui-search-bar__input {
-  height: 28px;
-  line-height: 28px;
-  font-size: 12px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
 }
 
 .weui-icon-clear {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 5px 10px;
+  padding: 5px 14px;
   font-size: 0;
 }
 
