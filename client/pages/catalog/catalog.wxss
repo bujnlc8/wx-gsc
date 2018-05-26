@@ -21,7 +21,8 @@
 }
 .title{
   font-size: 32rpx;
-  margin-right: 300rpx;
+  display: inline-block;
+  padding-right: 2em;
 }
 .author{
   font-size: 25rpx;

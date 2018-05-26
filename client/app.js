@@ -11,6 +11,7 @@ App({onLaunch(){
   try{
       var today = util.formatTime(new Date())
       open_id = wx.getStorageSync('user_open_id')
+      var play_mode = wx.getStorageSync('play_mode')
       today = today.replace(/-/g, '')
       var historyplay = wx.getStorageSync('historyplay')
       var today_clear = wx.getStorageSync('clear_1' + today)
@@ -31,5 +32,6 @@ App({onLaunch(){
           data: open_id
         })
       }
+      wx.setStorageSync('play_mode', play_mode ? play_mode: 'xunhuan')
   }catch(e){}
 }});
