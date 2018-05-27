@@ -139,7 +139,7 @@ Page({
               time2close: time2close,
               closeplaytime: parseInt(seconds / 60)
             })
-            var id = setInterval(() => {
+            var timedId = setInterval(() => {
               try {
                 var time2closeS = wx.getStorageSync('time2close')
               } catch (e) {
@@ -157,11 +157,11 @@ Page({
                 })
                 wx.removeStorageSync('time2close')
                 wx.removeStorageSync('closeplaytime')
-                clearInterval(id)
+                clearInterval(timedId)
                 wx.setStorageSync('setTimedInt', 0)
               }
-            }, 2000)
-            wx.setStorageSync('setTimedInt', id)
+            }, 3000)
+            wx.setStorageSync('setTimedInt', timedId)
           } else {
             wx.showToast({
               title: '请先打开播放器',
@@ -396,24 +396,23 @@ Page({
       try {
         that.get_by_id(play_id)
         var try_times = 0
-        var try_play = () => {
+        var playInt = setInterval(() => {
           if (that.data.songciItem && that.data.songciItem.id == play_id) {
             that.playsound();
             if (that.data.songciItem.work_title) {
               that.record_play(play_id, that.data.songciItem.work_title + '-' + that.data.songciItem.work_author);
             }
-            clearInterval(int)
+            clearInterval(playInt)
           }
           try_times++
-          if (try_times >= 1000) {
+          if (try_times >= 100) {
             wx.showToast({
               title: '播放失败:(',
               icon: 'none'
             });
-            clearInterval(int)
+            clearInterval(playInt)
           }
-        }
-        let int = setInterval(try_play, 600)
+        }, 600)
       } catch (e) {
         wx.showToast({
           title: '播放失败:(',
@@ -604,14 +603,12 @@ Page({
       backgroundAudioManager.epname = 'i古诗词'
       backgroundAudioManager.singer = this.data.songciItem.work_author
       backgroundAudioManager.coverImgUrl = this.data.poster
-      backgroundAudioManager.src = this.data.audioUrl
       backgroundAudioManager.startTime = this.data.seek2
       backgroundAudioManager.seek(this.data.seek2)
-      setTimeout(() => {
-        this.setData({
-          playing: true
-        });
-      }, 300)
+      backgroundAudioManager.src = this.data.audioUrl
+      this.setData({
+        playing: true
+      });
     } else {
       wx.showToast({
         title: '播放失败，请稍后重试~~',
@@ -687,18 +684,9 @@ Page({
       }
     });
     this.backgroundAudioManager.onPause(() => {
-      //that.pauseplaybackmusic()
+      that.pauseplaybackmusic()
     });
     this.backgroundAudioManager.onStop(() => {
-      that.setData({
-        playing: false,
-        seek2: 0,
-        slideValue: 0,
-      });
-      wx.showToast({
-        title: '停止播放',
-        icon: 'none'
-      })
     });
     this.backgroundAudioManager.onError((e) => {
       that.setData({
@@ -881,9 +869,6 @@ Page({
   sliderChanging: function (e) {
     var that = this
     var current_time = e.detail.value / 100.0 * that.backgroundAudioManager.duration
-    if (!that.backgroundAudioManager.paused) {
-      that.backgroundAudioManager.pause()
-    }
     if (that.backgroundAudioManager.buffered < current_time) {
       wx.showLoading({
         title: '音频加载中',
@@ -899,13 +884,12 @@ Page({
     var that = this
     var v = e.detail.value
     var duration = that.backgroundAudioManager.duration ? that.backgroundAudioManager.duration : 0
-    that.backgroundAudioManager.pause()
     var seek2 = v / 100 * duration
     that.setData({
       seek2: seek2 >= duration ? 0 : seek2
     });
     setTimeout(() => {
       that.playsound()
-    }, 600)
+    }, 1000)
   }
 });
