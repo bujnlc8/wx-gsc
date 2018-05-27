@@ -597,6 +597,7 @@ Page({
     that.get_by_id(id_)
   },
   playsound: function () {
+    var that = this
     const backgroundAudioManager = this.backgroundAudioManager
     if (this.data.songciItem) {
       backgroundAudioManager.title = this.data.songciItem.work_title
@@ -604,8 +605,8 @@ Page({
       backgroundAudioManager.singer = this.data.songciItem.work_author
       backgroundAudioManager.coverImgUrl = this.data.poster
       backgroundAudioManager.startTime = this.data.seek2
-      backgroundAudioManager.seek(this.data.seek2)
       backgroundAudioManager.src = this.data.audioUrl
+      backgroundAudioManager.play()
       this.setData({
         playing: true
       });
@@ -687,6 +688,7 @@ Page({
       that.pauseplaybackmusic()
     });
     this.backgroundAudioManager.onStop(() => {
+      return false
     });
     this.backgroundAudioManager.onError((e) => {
       that.setData({
@@ -888,8 +890,23 @@ Page({
     that.setData({
       seek2: seek2 >= duration ? 0 : seek2
     });
-    setTimeout(() => {
-      that.playsound()
-    }, 1000)
+    that.playsound()
+    setTimeout(()=>{
+      var showLoad = false
+      var playornot = setInterval(() => {
+        if (that.backgroundAudioManager.paused) {
+          if(!showLoad){
+            wx.showLoading({
+              title: '音频加载中...',
+            })
+          }
+          showLoad = true
+          that.playsound()
+        } else {
+          wx.hideLoading()
+          clearInterval(playornot)
+        }
+      }, 800)
+    }, 800)  
   }
 });
