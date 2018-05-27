@@ -74,6 +74,6 @@ App({
     } catch (e) { }
   },
   onShow: function () {
-    this.get_music_list()
+    //this.get_music_list()
   }
 });

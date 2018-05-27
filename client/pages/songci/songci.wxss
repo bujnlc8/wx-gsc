@@ -47,14 +47,20 @@ audio {
 }
 
 .title :hover{
-  background-color: #F6F6F6;
+  /* background-color: #F6F6F6; */
   border-radius: 8rpx;
+  font-weight: bolder;
 }
 
 .author {
   font-size: 35rpx;
   text-align: center;
   margin-top: 15rpx;
+}
+
+.author:hover{
+  border-radius: 8rpx;
+  font-weight: bolder;
 }
 
 .content {

@@ -529,7 +529,10 @@ Page({
     var pages = getCurrentPages()
     var url = '/pages/catalog/catalog?id=' + id_ + '&q=' + q
     if (pages.length == config.maxLayer) {
-      util.pageConfirm(url)
+      //util.pageConfirm(url)
+      wx.redirectTo({
+        url: url,
+      })
     } else {
       wx.navigateTo({
         url: url
@@ -727,6 +730,13 @@ Page({
       var app = getApp()
       app.get_music_list()
     }
+    var id_ = setInterval(() => {
+      if (that.data.songciItem) {
+        clearInterval(id_)
+        that.setCurrentPlaying();
+        wx.hideLoading();
+      }
+    }, 100)
   },
   setCurrentPlaying: function () {
     var that = this
@@ -789,9 +799,12 @@ Page({
     var pages = getCurrentPages()
     var url = '/pages/songci/songci?id=' + key
     if (pages.length == config.maxLayer) {
-      util.pageConfirm(url)
+      //util.pageConfirm(url)
+      wx.redirectTo({
+        url: url,
+      })
     } else {
-      wx.navigateTo({
+      wx.redirectTo({
         url: url
       });
     }

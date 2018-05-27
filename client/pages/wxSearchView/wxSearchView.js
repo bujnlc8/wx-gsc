@@ -27,13 +27,15 @@ var __that = null;
 
 // 初始化函数
 function init(that, hotKeys, tipKeys, searchFunction, goBackFunction) {
-
   __that = that;
   __tipKeys = tipKeys;
   __searchFunction = searchFunction;
   __goBackFunction = goBackFunction;
 
   var temData = {};
+  if (that.search_V){
+    temData.value = that.search_V
+  }
   var barHeight = 30;
   var view = {
     barHeight: barHeight
@@ -98,6 +100,12 @@ function wxSearchClear() {
 // 点击提示或者关键字、历史记录时的操作
 function wxSearchKeyTap(e) {
   search(e.target.dataset.key);
+  var temData = __that.data.wxSearchData;
+  temData.tipKeys = [];
+  // 更新视图
+  __that.setData({
+    wxSearchData: temData,
+  });
 }
 
 // 确任或者回车
