@@ -111,8 +111,7 @@ function wxSearchConfirm(e) {
 }
 
 function search(inputValue) {
-  console.log(inputValue)
-  if (inputValue && inputValue.length > 0) {
+  if (inputValue) {
     // 添加历史记录
     if (inputValue!='音频'){
       wxSearchAddHisKey(inputValue);

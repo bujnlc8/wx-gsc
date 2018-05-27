@@ -166,7 +166,7 @@ Page({
     }
     var currentInterval = setInterval(()=>{
       that.getCurrentPlayId(); 
-    }, 450)
+    }, 500)
     that.currentInterval =currentInterval
   },
   wxSearchInput: WxSearch.wxSearchInput,  // 输入变化时的操作
