@@ -4,7 +4,7 @@
   <text data-q='{{songciItem.work_title}}' data-id_='{{songciItem.id}}' bindtap='search_' style='display:inline-block;'>
   {{songciItem.work_title}}
   </text>
-    <image wx:if="{{songciItem.audio_id==0}}" src='../../static/hc.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;'  bindtap='text2audio' data-id_="{{songciItem.id}}" data-title="{{songciItem.work_title}}"  data-author="{{songciItem.work_author}}"></image>
+    <!-- <image wx:if="{{songciItem.audio_id==0}}" src='../../static/hc.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;'  bindtap='text2audio' data-id_="{{songciItem.id}}" data-title="{{songciItem.work_title}}"  data-author="{{songciItem.work_author}}"></image> -->
     <image wx:if="{{songciItem.audio_id>0}}" src='../../static/sound.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;'></image>
   </view>
   <view wx:if="{{songciItem.work_dynasty}}" class='myclick author' data-q='{{songciItem.work_author}}' data-id_='{{songciItem.id}}' bindtap='search_'>
@@ -83,7 +83,8 @@
     <view bindtap="operate_like" class='tab-item' data-like='{{songciItem.like}}'>
       <image src='{{songciItem.like==1 ? "../../static/liked.png":"../../static/like.png"}}' style='width:1.2em;height:1.2em;' data-like='{{songciItem.like}}'></image>
     </view>
-    <view class='translation' style='{{(currentTab==4)||(currentTab==1)?"text-indent:2em;":""}}' bindlongpress='{{(currentTab==2||currentTab==1||currentTab==0)?"longPress":"longPressBack" }}'>
+    <!-- <view class='translation' style='{{(currentTab==4)||(currentTab==1)?"text-indent:2em;":""}}' bindlongpress='{{(currentTab==2||currentTab==1||currentTab==0)?"longPress":"longPressBack" }}'> -->
+    <view class='translation' style='{{(currentTab==4)||(currentTab==1)?"text-indent:2em;":""}}'>
       <text decode='true' space='true'>{{show_content}}</text>
     </view>
   </view>

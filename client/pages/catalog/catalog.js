@@ -77,7 +77,7 @@ Page({
       title: '加载中...',
     });
     wx.request({
-      url: config.songciUrl + 'index/all',
+      url: config.songciUrl + 'index/all/abc',
       success(result) {
         if (!result || result.data.code != 0) {
           wx.showToast({
@@ -323,7 +323,7 @@ Page({
     }
     WxSearch.init(
       that,
-      ['端午', '苏轼', '李白', "李清照", "柳永", '辛弃疾', '杜甫', '水龙吟', '青玉案', '蝶恋花', '与陈伯之书', '滕王阁序', '秋思'], // 热点搜索推荐
+      ['苏轼', '李白', "李清照", "柳永", '辛弃疾', '杜甫', '水龙吟', '青玉案', '蝶恋花', '与陈伯之书', '滕王阁序', '秋思'], // 热点搜索推荐
       ['宋祁', '朱淑真', "吴文英", "晏几道", '秦观', '贺铸', '王安石', '李之仪', '周邦彦', '姜夔', '晏殊', '张先', '范仲淹', '晁补之', '赵佶', '宋徽宗', '张元干', '岳飞', '史达祖', '刘克庄', '蒋捷', '钱惟演', '张炎', '张孝祥', '张镃', '张抡', '青玉案', '元宵', '中秋', '蝶恋花', '满庭芳', '卜算子', '菩萨蛮', '忆江南', '浣溪沙', '诉衷情', '清平乐', '雨霖铃', '定风波', '八声甘州', '青门引', '念奴娇', '水调歌头', '洞仙歌', '渔家傲', '横塘路', '瑞龙吟', '六丑', '欧阳修', '声声慢', '永遇乐', '贺新郎', '水龙吟', '程垓', '齐天乐'],// 搜索匹配，[]表示不使用
       that.mySearchFunction, // 提供一个搜索回调函数
       that.myGobackFunction //提供一个返回回调函数
@@ -379,7 +379,7 @@ Page({
     that.setData({
       animationData: animation1.export()
     })
-    that.setplayinganimation()
+    that.setplayinganimation();
   },
   setplayinganimation: function () {
     var that = this
@@ -406,9 +406,9 @@ Page({
           playinganimation: animation.export()
         })
         n++;
-      }.bind(that), 600)
+      }.bind(that), 700)
       wx.setStorageSync('playingint', int)
-    }, 200)
+    }, 700)
   },
   /**
    * 生命周期函数--监听页面隐藏

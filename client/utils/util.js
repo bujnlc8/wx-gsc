@@ -106,5 +106,24 @@ var userLogin = function(){
   });
 }
 
+var setFont = function(){
+  wx.getNetworkType({
+    success: function (res) {
+      var networkType = res.networkType
+      if (networkType == 'wifi') {
+        try {
+          wx.loadFontFace({
+            family: 'songkai',
+            source: 'url("https://qcloudtest-1256650966.cos.ap-guangzhou.myqcloud.com/font/songkai.ttf")'
+          });
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    }
+  })
+}
+
 module.exports = { formatTime, showBusy, 
-  showSuccess, showModel, closeToast, pageConfirm, userLogin, timetrans}
+  showSuccess, showModel, closeToast, pageConfirm, 
+  userLogin, timetrans, setFont}

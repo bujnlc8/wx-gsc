@@ -2,7 +2,7 @@
   /* opacity: 0.6; */
   font-weight: bolder;
 }
-.container{display:flex;flex-direction:column;box-sizing:border-box;font: 14px/1.5 '\5b8b\4f53',SimSun, "Product San",'Noto Serif CJK SC', 'Source Han Serif SC', "Source Han Serif", source-han-serif-sc,"Noto SansCJK","Helvetica Neue",Helvetica,"Heiti SC","WenQuanYi Micro Hei";line-height:1.8em;
+.container{display:flex;flex-direction:column;box-sizing:border-box;font: 14px/1.5 songkai,SimSun, "Product San",'Noto Serif CJK SC', 'Source Han Serif SC', "Source Han Serif", source-han-serif-sc,"Noto SansCJK","Helvetica Neue",Helvetica,"Heiti SC","WenQuanYi Micro Hei";line-height:1.8em;
 }
 
 

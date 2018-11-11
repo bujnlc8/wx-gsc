@@ -160,7 +160,7 @@ Page({
                 clearInterval(timedId)
                 wx.setStorageSync('setTimedInt', 0)
               }
-            }, 3000)
+            }, 1000)
             wx.setStorageSync('setTimedInt', timedId)
           } else {
             wx.showToast({
@@ -252,6 +252,9 @@ Page({
         }
         if (!open_id) {
           util.userLogin()
+        }
+        if (open_id==""){
+          open_id = "adcd"
         }
         wx.request({
           url: config.songciUrl + 'index/' + key + '/' + open_id,
@@ -708,10 +711,10 @@ Page({
       });
     });
     this.backgroundAudioManager.onCanplay(() => {
-      wx.hideLoading();
+      //wx.hideLoading();
     });
     this.backgroundAudioManager.onPlay(() => {
-      wx.hideLoading();
+      //wx.hideLoading();
     });
     this.backgroundAudioManager.onPrev(() => {
       var mode = that.get_play_mode()
@@ -723,6 +726,7 @@ Page({
       that.do_operate_play('next', mode)
     });
     this.backgroundAudioManager.onTimeUpdate(() => {
+      wx.hideLoading();
       that.musicStart()
     });
     var music_ids = wx.getStorageSync('music_ids')
@@ -813,7 +817,7 @@ Page({
   onShareAppMessage: function (res) {
     return {
       title: this.data.currentSongci,
-      path: '/pages/songci/songci?id=' + this.data.audioId,
+      path: '/pages/songci/songci?id=' + this.data.songciItem.id,
       imageUrl: '/static/share4.jpg',
       success: function (res) {
         util.showSuccess('分享成功')
@@ -853,8 +857,8 @@ Page({
             title: '定时已到~~',
             icon: 'none'
           })
-          wx.setStorageSync('setTimedInt', 0)
           clearInterval(setTimedInt)
+          wx.setStorageSync('setTimedInt', 0)
         }
         return
       }

@@ -18,7 +18,7 @@ App({
       },
       fail: function () {
         wx.request({
-          url: config.songciUrl + 'query/' + value,
+          url: config.songciUrl + 'query/' + value +"/main/abcd",
           success(result) {
             if (!result || result.data.code != 0) {
               return
@@ -74,6 +74,6 @@ App({
     } catch (e) { }
   },
   onShow: function () {
-    //this.get_music_list()
+    //util.setFont()
   }
 });

@@ -88,6 +88,9 @@ function wxSearchClear() {
   // 更新数据
   temData.value = "";
   temData.tipKeys = [];
+  if(__that.search_V){
+    __that.search_V = ''
+  }
   // 更新视图
   __that.setData({
     wxSearchData: temData,
