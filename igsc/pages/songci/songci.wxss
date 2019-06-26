@@ -1,0 +1,72 @@
+.operate_music{
+  height:42rpx;
+  width:42rpx;
+  padding-right: 18rpx;
+  /* padding-top: 10rpx; */
+}
+.tabs{
+  padding-top: 22rpx;
+}
+
+.tab-item{
+  display: inline-block;
+  width: 64rpx;
+  margin-left: 15rpx;
+  font-family: 'myfont';
+  height: 32rpx;
+  line-height: 36rpx;
+  font-size: 30rpx;
+}
+.active{
+  color: #BB7E7E; 
+  border-bottom: 1.5rpx solid #BB7E7E;
+  font-weight: 600;
+}
+.indent{
+  text-align: left;
+  text-indent: 72rpx;
+}
+.center{
+  text-align: center;
+}
+
+.title {
+  font-size: 40rpx;
+  text-align: center;
+  line-height: 60rpx;
+}
+
+.title :hover{
+  /* background-color: #F6F6F6; */
+  border-radius: 8rpx;
+  font-weight: bolder;
+}
+
+.author {
+  font-size: 35rpx;
+  text-align: center;
+  margin-top: 15rpx;
+}
+
+.author:hover{
+  border-radius: 8rpx;
+  font-weight: bolder;
+}
+
+.content {
+  font-size: 36rpx;
+  margin-top: 10rpx;
+  line-height: 54rpx;
+}
+
+.translation {
+  margin-top: 10rpx;
+  text-indent: 60rpx;
+  font-size: 32rpx;
+  line-height: 48rpx;
+}
+.songci{
+  min-height: 100%;
+  padding-left: 35rpx;
+  padding-right: 35rpx;
+}

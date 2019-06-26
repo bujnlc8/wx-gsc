@@ -1,0 +1,174 @@
+/** 整个区域 */
+.wxSearch{
+  width: 100%;
+  /* border-top: 1px #eee solid; */
+  /*background-color: rgba(200, 200, 200);*/
+  z-index: 999;
+}
+
+/** 搜索框下面的提示区域 */
+.wxSearchInner{
+   /* background-color: #fff;  */
+}
+
+/** 搜索热点标题 */
+.wxSearchTitle{
+  display: block;
+  padding-left: 5rpx;
+  font-size: 18rpx;
+  text-align: left;
+}
+
+/** 提示样式 */
+.wxSearchMindKeyItem{
+  padding: 10rpx 5rpx 10rpx 15rpx;
+  margin-left: 10rpx;
+  /* border-bottom: 1px solid #eee; */
+  display: flex;
+  font-size: 18rpx;
+}
+
+/** 标签样式 */
+.wxSearchKeyList{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-bottom: 1rpx solid #eee;
+}
+
+/** 标签样式 */
+.wxSearchKeyItem{
+  flex: 0 0 16%;
+  font-size: 18rpx;
+  text-align: center;
+  /* border: 1px solid #eee; */
+  margin: 6rpx;
+  padding: 1rpx 2rpx;
+  border-radius: 3rpx;
+  background-color: rgba(200, 200, 200, 0.3);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap
+}
+
+/** 搜索记录标题栏 */
+.wxSearchHistoryItem{
+  padding-left: 5rpx;
+  padding-right: 12rpx;
+  display: flex;
+  margin-bottom: -10rpx;
+}
+
+/** 搜索记录标题 */
+.wxSearchHistoryItemTitle{
+  flex: 8;
+  font-size: 18rpx;
+}
+
+/** 搜索记录删除按钮 */
+.wxSearchHistoryItemDel{
+  flex: 1;
+  font-size: 18rpx;
+  text-align: center;
+  padding-top:2rpx;
+  padding-bottom: 2rpx;
+  border: 1rpx solid #eee;
+  border-radius: 2rpx;
+}
+
+/** ---------------------- 以下是搜索框的 we-ui 样式--------------------------------*/
+
+/*!
+ * WeUI v1.1.1 (https://github.com/weui/weui-wxss)
+ * Copyright 2017 Tencent, Inc.
+ * Licensed under the MIT license
+ */
+
+.weui-search-bar {
+  position: relative;
+  padding-left: 5rpx;
+  padding-top: 8rpx;
+  padding-bottom: 5rpx;
+  padding-right: 5rpx;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  box-sizing: border-box;
+}
+
+.weui-icon-search {
+  margin-right: 12rpx;
+  font-size: inherit;
+}
+
+.weui-icon-search_in-box {
+  position: absolute;
+  left: 8rpx;
+  top: 12.5rpx;
+}
+
+.weui-search-bar__text {
+  display: inline-block;
+  font-size: 30rpx;
+  vertical-align: middle;
+}
+
+.weui-search-bar__form {
+  position: relative;
+  -webkit-box-flex: 1;
+  -webkit-flex: auto;
+  flex: auto;
+  border-radius: 5rpx;
+  background: #fff;
+  border: 1rpx solid #FCF9F4;
+}
+
+.weui-search-bar__box {
+  position: relative;
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.weui-search-bar__input {
+  height: 40rpx;
+  line-height: 40rpx;
+  font-size: 20rpx;
+  padding: 0;
+}
+
+.weui-icon-clear {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5rpx 14rpx;
+  font-size: 0;
+}
+
+.weui-search-bar__label {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  border-radius: 3rpx;
+  text-align: center;
+  color: #9b9b9b;
+  background: #fff;
+  line-height: 28rpx;
+}
+
+.weui-search-bar__cancel-btn {
+  margin-left: 10rpx;
+  line-height: 40rpx;
+  white-space: nowrap;
+  font-size: 25rpx;
+  height: 40rpx;
+}
+.weui-search-bar__cancel-btn:hover{
+  color: #09bb07;
+  font-weight: 700;
+}

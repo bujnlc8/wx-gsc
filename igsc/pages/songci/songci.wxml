@@ -1,0 +1,90 @@
+<!--pages/songci/songci.wxml-->
+<view class='songci container'>
+  <view  class='title'>
+  <text data-q='{{songciItem.work_title}}' data-id_='{{songciItem.id}}' bindtap='search_' style='display:inline-block;'>
+  {{songciItem.work_title}}
+  </text>
+    <image wx:if="{{songciItem.audio_id>0}}" src='../../static/sound.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;'></image>
+  </view>
+  <view wx:if="{{songciItem.work_dynasty}}" class='myclick author' data-q='{{songciItem.work_author}}' data-id_='{{songciItem.id}}' bindtap='search_'>
+    [{{songciItem.work_dynasty}}] {{songciItem.work_author}}
+  </view>
+  <view wx:if="{{songciItem.content.length>=300}}">
+  <view style='display:flex;flex-direction:row;margin-top:10rpx;' wx:if="{{songciItem.audio_id!=0}}">
+    <view style='flex:40;text-align:right;'>
+      <navigator redirect url='/pages/catalog/catalog?q=音频' style='display:inline-block;'>
+        <image src='../../static/list.png' class="operate_music"></image>
+      </navigator>
+      <navigator redirect url='/pages/catalog/catalog' style='display:inline-block;'>
+        <image src='../../static/search.png' class="operate_music"></image>
+      </navigator>
+      <image src='../../static/up_music.png' class="operate_music" bindtap='operate_play' data-key='up'></image>
+    </view>
+    <view style='flex:20;text-align:center;'>
+      <image src='../../static/{{playing ? "pause" : "play_music"}}.png' class="operate_music" bindtap='playbackmusic'></image>
+    </view>
+    <view style='flex:45;text-align:left;position:relative;'>
+      <image src='../../static/next_music.png' class="operate_music" bindtap='operate_play' data-key='next'></image>
+      <image wx:if="{{mode}}" src='../../static/{{mode}}.png' class="operate_music" bindtap='change_mode'></image>
+      <image src='../../static/timed.png' class="operate_music" bindtap='setTimed'>
+      </image>
+      <text wx:if="{{time2close!=0}}" style='text-align:center;line-height:2em;display:inline-block;width:2em;height:2em;border-radius:1em;font-size:9rpx;color:white;background-color:#BB7E7E;opacity:0.8;position:absolute;top:0px;margin-left:-28rpx;'>{{closeplaytime}}</text>
+    </view>
+  </view>
+  <view wx:if="{{playing}}" style="margin-top:5rpx;">
+    <slider bindchanging="sliderChanging" bindchange="slider2change" step="2" min="1" block-size="15" value='{{slideValue}}' block-color="#BB7E7E" style="margin-top:5rpx;margin-bottom:5rpx;"/>
+    <text style='font-size:16rpx;color:#BB7E7E;opacity:0.8;float:right;margin-right:18rpx;' wx:if="{{duration_show}}">{{duration_show}}</text>
+    <text style='font-size:16rpx;color:#BB7E7E;opacity:0.8;float:left;margin-left:18rpx;' wx:if="{{current_time_show}}">{{current_time_show}}</text>
+  </view>
+  </view>
+  <view wx:if="{{songciItem.foreword}}" style='margin-left:72rpx;margin-top:-10rpx;font-style:italic;'>
+    <text selectable='true' decode="true" space="true">
+    {{songciItem.foreword}}
+    </text>
+  </view>
+  <view class='content {{songciItem.layout}}'>
+    <text selectable='true' decode="true" space="true">{{songciItem.content}}</text>
+  </view>
+  <view wx:if="{{songciItem.content.length<300}}">
+  <view style='display:flex;flex-direction:row;margin-top:10rpx;' wx:if="{{songciItem.audio_id!=0}}">
+    <view style='flex:40;text-align:right;'>
+      <navigator redirect url='/pages/catalog/catalog?q=音频' style='display:inline-block;'>
+        <image src='../../static/list.png' class="operate_music"></image>
+      </navigator>
+      <navigator  redirect url='/pages/catalog/catalog' style='display:inline-block;'>
+        <image src='../../static/search.png' class="operate_music"></image>
+      </navigator>
+      <image src='../../static/up_music.png' class="operate_music" bindtap='operate_play' data-key='up'></image>
+    </view>
+    <view style='flex:20;text-align:center;'>
+      <image src='../../static/{{playing ? "pause" : "play_music"}}.png' class="operate_music" bindtap='playbackmusic'></image>
+    </view>
+    <view style='flex:45;text-align:left;position:relative;'>
+      <image src='../../static/next_music.png' class="operate_music" bindtap='operate_play' data-key='next'></image>
+      <image wx:if="{{mode}}" src='../../static/{{mode}}.png' class="operate_music" bindtap='change_mode'></image>
+      <image src='../../static/timed.png' class="operate_music" bindtap='setTimed'>
+      </image>
+      <text wx:if="{{time2close!=0}}" style='text-align:center;line-height:2em;display:inline-block;width:2em;height:2em;border-radius:1em;font-size:9rpx;color:white;background-color:#BB7E7E;opacity:0.8;position:absolute;top:0px;margin-left:-28rpx;'>{{closeplaytime}}</text>
+    </view>
+  </view>
+  <view wx:if="{{playing}}" style="margin-top:5rpx;">
+    <slider bindchanging="sliderChanging" bindchange="slider2change" step="2" min="1" block-size="15" value='{{slideValue}}' block-color="#BB7E7E" style="margin-top:5rpx;margin-bottom:5rpx;"/>
+    <text style='font-size:16rpx;color:#BB7E7E;opacity:0.8;float:right;margin-right:16rpx;' wx:if="{{duration_show}}">{{duration_show}}</text>
+    <text style='font-size:18rpx;color:#BB7E7E;opacity:0.8;float:left;margin-left:18rpx;' wx:if="{{current_time_show}}">{{current_time_show}}</text>
+  </view>
+  </view>
+  <view class='tabs'>
+    <view wx:if="{{songciItem.intro}}" bindtap='changeContent' data-item='0' class='tab-item {{currentTab==0?"active":""}}'>评析</view>
+    <view wx:if="{{songciItem.annotation}}" bindtap='changeContent' data-item='1' class='tab-item {{currentTab==1?"active":""}}'>注释</view>
+    <view wx:if="{{songciItem.translation}}" bindtap='changeContent' data-item='2' class='tab-item {{currentTab==2?"active":""}}'>译文</view>
+    <view wx:if="{{songciItem.appreciation}}" bindtap='changeContent' data-item='3' class='tab-item {{currentTab==3?"active":""}}'>赏析</view>
+    <view wx:if="{{songciItem.master_comment}}" bindtap='changeContent' data-item='4' class='tab-item {{currentTab==4?"active":""}}'>辑评</view>
+    <view bindtap="operate_like" class='tab-item' data-like='{{songciItem.like}}'>
+      <image src='{{songciItem.like==1 ? "../../static/liked.png":"../../static/like.png"}}' style='width:32rpx;height:32rpx;' data-like='{{songciItem.like}}'></image>
+    </view>
+    <!-- <view class='translation' style='{{(currentTab==4)||(currentTab==1)?"text-indent:2em;":""}}' bindlongpress='{{(currentTab==2||currentTab==1||currentTab==0)?"longPress":"longPressBack" }}'> -->
+    <view class='translation' style='{{(currentTab==4)||(currentTab==1)?"text-indent:2em;":""}}'>
+      <text decode='true' space='true'>{{show_content}}</text>
+    </view>
+  </view>
+</view>
