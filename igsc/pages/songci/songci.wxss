@@ -1,14 +1,15 @@
-.operate_music{
-  height:42rpx;
-  width:42rpx;
+.operate_music {
+  height: 42rpx;
+  width: 42rpx;
   padding-right: 18rpx;
   /* padding-top: 10rpx; */
 }
-.tabs{
+
+.tabs {
   padding-top: 22rpx;
 }
 
-.tab-item{
+.tab-item {
   display: inline-block;
   width: 64rpx;
   margin-left: 15rpx;
@@ -17,16 +18,19 @@
   line-height: 36rpx;
   font-size: 30rpx;
 }
-.active{
-  color: #BB7E7E; 
-  border-bottom: 1.5rpx solid #BB7E7E;
+
+.active {
+  color: #bb7e7e;
+  border-bottom: 1.5rpx solid #bb7e7e;
   font-weight: 600;
 }
-.indent{
+
+.indent {
   text-align: left;
   text-indent: 72rpx;
 }
-.center{
+
+.center {
   text-align: center;
 }
 
@@ -36,7 +40,7 @@
   line-height: 60rpx;
 }
 
-.title :hover{
+.title :hover {
   /* background-color: #F6F6F6; */
   border-radius: 8rpx;
   font-weight: bolder;
@@ -48,7 +52,7 @@
   margin-top: 15rpx;
 }
 
-.author:hover{
+.author:hover {
   border-radius: 8rpx;
   font-weight: bolder;
 }
@@ -65,7 +69,8 @@
   font-size: 32rpx;
   line-height: 48rpx;
 }
-.songci{
+
+.songci {
   min-height: 100%;
   padding-left: 35rpx;
   padding-right: 35rpx;

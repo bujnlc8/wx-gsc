@@ -33,7 +33,7 @@ function init(that, hotKeys, tipKeys, searchFunction, goBackFunction) {
   __goBackFunction = goBackFunction;
 
   var temData = {};
-  if (that.search_V){
+  if (that.search_V) {
     temData.value = that.search_V
   }
   var barHeight = 30;
@@ -43,7 +43,7 @@ function init(that, hotKeys, tipKeys, searchFunction, goBackFunction) {
   temData.hotKeys = hotKeys;
 
   wx.getSystemInfo({
-    success: function (res) {
+    success: function(res) {
       var wHeight = res.windowHeight;
       view.seachHeight = wHeight - barHeight;
       temData.view = view;
@@ -88,14 +88,14 @@ function wxSearchClear() {
   // 更新数据
   temData.value = "";
   temData.tipKeys = [];
-  if(__that.search_V){
+  if (__that.search_V) {
     __that.search_V = ''
   }
   // 更新视图
   __that.setData({
     wxSearchData: temData,
   });
-  if(__that.data.page !='like'){
+  if (__that.data.page != 'like') {
     __that.getData(__that);
   }
 }
@@ -114,9 +114,9 @@ function wxSearchKeyTap(e) {
 // 确任或者回车
 function wxSearchConfirm(e) {
   var key = e.target.dataset.key;
-  if(key=='back'){
+  if (key == 'back') {
     __goBackFunction();
-  }else{
+  } else {
     search(__that.data.wxSearchData.value);
   }
 }
@@ -124,7 +124,7 @@ function wxSearchConfirm(e) {
 function search(inputValue) {
   if (inputValue) {
     // 添加历史记录
-    if (inputValue!='音频'){
+    if (inputValue != '音频') {
       wxSearchAddHisKey(inputValue);
     }
     // 更新
@@ -137,9 +137,9 @@ function search(inputValue) {
     __searchFunction(inputValue);
     wx.setNavigationBarTitle({
       title: 'i古诗词',
-      page:'main'
+      page: 'main'
     });
-  }else{
+  } else {
     if (__that.data.page != 'like') {
       __that.getData(__that);
     }
@@ -177,7 +177,7 @@ function wxSearchAddHisKey(inputValue) {
     wx.setStorage({
       key: "wxSearchHisKeys",
       data: value,
-      success: function () {
+      success: function() {
         getHisKeys(__that);
       }
     })
@@ -187,7 +187,7 @@ function wxSearchAddHisKey(inputValue) {
     wx.setStorage({
       key: "wxSearchHisKeys",
       data: value,
-      success: function () {
+      success: function() {
         getHisKeys(__that);
       }
     })
@@ -198,7 +198,7 @@ function wxSearchAddHisKey(inputValue) {
 function wxSearchDeleteAll() {
   wx.removeStorage({
     key: 'wxSearchHisKeys',
-    success: function (res) {
+    success: function(res) {
       var value = [];
       var temData = __that.data.wxSearchData;
       temData.his = value;
@@ -212,10 +212,10 @@ function wxSearchDeleteAll() {
 // 导出接口
 module.exports = {
   init: init, //初始化函数
-  wxSearchInput: wxSearchInput,// 输入变化时的操作
+  wxSearchInput: wxSearchInput, // 输入变化时的操作
   wxSearchKeyTap: wxSearchKeyTap, // 点击提示或者关键字、历史记录时的操作
   wxSearchDeleteAll: wxSearchDeleteAll, // 删除所有的历史记录
   wxSearchConfirm: wxSearchConfirm, // 搜索函数
-  wxSearchClear: wxSearchClear,  // 清空函数
+  wxSearchClear: wxSearchClear, // 清空函数
   search: search,
 }

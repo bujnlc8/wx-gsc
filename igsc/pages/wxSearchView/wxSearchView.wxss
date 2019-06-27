@@ -1,18 +1,20 @@
 /** 整个区域 */
-.wxSearch{
+
+.wxSearch {
   width: 100%;
-  /* border-top: 1px #eee solid; */
-  /*background-color: rgba(200, 200, 200);*/
+  /* border-top: 1px #eee solid; *//*background-color: rgba(200, 200, 200);*/
   z-index: 999;
 }
 
 /** 搜索框下面的提示区域 */
-.wxSearchInner{
-   /* background-color: #fff;  */
+
+.wxSearchInner {
+  /* background-color: #fff;  */
 }
 
 /** 搜索热点标题 */
-.wxSearchTitle{
+
+.wxSearchTitle {
   display: block;
   padding-left: 5rpx;
   font-size: 18rpx;
@@ -20,7 +22,8 @@
 }
 
 /** 提示样式 */
-.wxSearchMindKeyItem{
+
+.wxSearchMindKeyItem {
   padding: 10rpx 5rpx 10rpx 15rpx;
   margin-left: 10rpx;
   /* border-bottom: 1px solid #eee; */
@@ -29,7 +32,8 @@
 }
 
 /** 标签样式 */
-.wxSearchKeyList{
+
+.wxSearchKeyList {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -37,7 +41,8 @@
 }
 
 /** 标签样式 */
-.wxSearchKeyItem{
+
+.wxSearchKeyItem {
   flex: 0 0 16%;
   font-size: 18rpx;
   text-align: center;
@@ -46,13 +51,14 @@
   padding: 1rpx 2rpx;
   border-radius: 3rpx;
   background-color: rgba(200, 200, 200, 0.3);
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /** 搜索记录标题栏 */
-.wxSearchHistoryItem{
+
+.wxSearchHistoryItem {
   padding-left: 5rpx;
   padding-right: 12rpx;
   display: flex;
@@ -60,17 +66,19 @@
 }
 
 /** 搜索记录标题 */
-.wxSearchHistoryItemTitle{
+
+.wxSearchHistoryItemTitle {
   flex: 8;
   font-size: 18rpx;
 }
 
 /** 搜索记录删除按钮 */
-.wxSearchHistoryItemDel{
+
+.wxSearchHistoryItemDel {
   flex: 1;
   font-size: 18rpx;
   text-align: center;
-  padding-top:2rpx;
+  padding-top: 2rpx;
   padding-bottom: 2rpx;
   border: 1rpx solid #eee;
   border-radius: 2rpx;
@@ -120,7 +128,7 @@
   flex: auto;
   border-radius: 5rpx;
   background: #fff;
-  border: 1rpx solid #FCF9F4;
+  border: 1rpx solid #fcf9f4;
 }
 
 .weui-search-bar__box {
@@ -168,7 +176,8 @@
   font-size: 25rpx;
   height: 40rpx;
 }
-.weui-search-bar__cancel-btn:hover{
+
+.weui-search-bar__cancel-btn:hover {
   color: #09bb07;
   font-weight: 700;
 }
