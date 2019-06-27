@@ -143,7 +143,7 @@
 .weui-search-bar__input {
   height: 40rpx;
   line-height: 40rpx;
-  font-size: 20rpx;
+  font: 20rpx songkai2;
   padding: 0;
 }
 

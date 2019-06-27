@@ -2,11 +2,13 @@
 	"client": "igsc/",
 	"miniprogramRoot": "igsc/",
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": true,
+		"enhance": false,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
+		"uglifyFileName": true,
 		"checkInvalidKey": true,
 		"checkSiteMap": true,
 		"uploadWithSourceMap": true,
@@ -14,8 +16,7 @@
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		},
-		"uglifyFileName": true
+		}
 	},
 	"appid": "wx3f2ef9f26eebfb65",
 	"projectname": "i%E5%8F%A4%E8%AF%97%E8%AF%8D",

@@ -106,7 +106,8 @@ var userLogin = function(){
   });
 }
 
-var setFont = function(){
+var loadFont = function(){
+  console.log("set font")
   wx.getNetworkType({
     success: function (res) {
       var networkType = res.networkType
@@ -126,4 +127,4 @@ var setFont = function(){
 
 module.exports = { formatTime, showBusy, 
   showSuccess, showModel, closeToast, pageConfirm, 
-  userLogin, timetrans, setFont}
+  userLogin, timetrans, loadFont}
