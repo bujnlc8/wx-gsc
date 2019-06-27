@@ -107,7 +107,6 @@ var userLogin = function(){
 }
 
 var loadFont = function(){
-  console.log("set font")
   wx.getNetworkType({
     success: function (res) {
       var networkType = res.networkType

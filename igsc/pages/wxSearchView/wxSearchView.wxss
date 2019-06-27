@@ -2,22 +2,13 @@
 
 .wxSearch {
   width: 100%;
-  /* border-top: 1px #eee solid; *//*background-color: rgba(200, 200, 200);*/
   z-index: 999;
 }
-
-/** 搜索框下面的提示区域 */
-
-.wxSearchInner {
-  /* background-color: #fff;  */
-}
-
-/** 搜索热点标题 */
 
 .wxSearchTitle {
   display: block;
   padding-left: 5rpx;
-  font-size: 18rpx;
+  font-size: 20rpx;
   text-align: left;
 }
 
@@ -28,7 +19,7 @@
   margin-left: 10rpx;
   /* border-bottom: 1px solid #eee; */
   display: flex;
-  font-size: 18rpx;
+  font-size: 20rpx;
 }
 
 /** 标签样式 */
@@ -43,13 +34,13 @@
 /** 标签样式 */
 
 .wxSearchKeyItem {
-  flex: 0 0 16%;
-  font-size: 18rpx;
+  flex: 0 0 20%;
+  font-size: 20rpx;
   text-align: center;
   /* border: 1px solid #eee; */
   margin: 6rpx;
-  padding: 1rpx 2rpx;
-  border-radius: 3rpx;
+  padding: 2rpx 4rpx;
+  border-radius: 4rpx;
   background-color: rgba(200, 200, 200, 0.3);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -69,14 +60,14 @@
 
 .wxSearchHistoryItemTitle {
   flex: 8;
-  font-size: 18rpx;
+  font-size: 20rpx;
 }
 
 /** 搜索记录删除按钮 */
 
 .wxSearchHistoryItemDel {
   flex: 1;
-  font-size: 18rpx;
+  font-size: 20rpx;
   text-align: center;
   padding-top: 2rpx;
   padding-bottom: 2rpx;
@@ -141,9 +132,9 @@
 }
 
 .weui-search-bar__input {
-  height: 40rpx;
-  line-height: 40rpx;
-  font: 20rpx;
+  height: 2.2rem;
+  line-height: 2.2rem;
+  font: 26rpx;
   padding: 0;
 }
 
@@ -171,10 +162,10 @@
 
 .weui-search-bar__cancel-btn {
   margin-left: 10rpx;
-  line-height: 40rpx;
+  line-height: 2.2rem;
   white-space: nowrap;
-  font-size: 25rpx;
-  height: 40rpx;
+  font-size: 30rpx;
+  height: 2.2rem;
 }
 
 .weui-search-bar__cancel-btn:hover {

@@ -715,7 +715,7 @@ Page({
       }
     });
     this.backgroundAudioManager.onPause(() => {
-      //that.pauseplaybackmusic()
+      return false
     });
     this.backgroundAudioManager.onStop(() => {
       return false

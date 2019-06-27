@@ -5,7 +5,7 @@
         <!-- <icon class="weui-icon-search_in-box" type="search" size="20rpx"></icon> -->
         <input type="text" class="weui-search-bar__input" placeholder="请输入查询内容" value="{{wxSearchData.value}}" bindinput="wxSearchInput" bindconfirm="wxSearchConfirm"/>
         <view class="weui-icon-clear" wx:if="{{wxSearchData.value && wxSearchData.value.length > 0}}">
-          <!-- <icon type="clear" bindtap="wxSearchClear" size="30rpx"></icon> -->
+          <icon type="clear" bindtap="wxSearchClear" size="30rpx"></icon>
         </view>
       </view>
     </view>

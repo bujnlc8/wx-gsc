@@ -33,8 +33,8 @@
     </view>
     <view wx:if="{{playing}}" style="margin-top:5rpx;">
       <slider bindchanging="sliderChanging" bindchange="slider2change" step="2" min="1" block-size="15" value='{{slideValue}}' block-color="#BB7E7E" style="margin-top:5rpx;margin-bottom:5rpx;" />
-      <text style='font-size:16rpx;color:#BB7E7E;opacity:0.8;float:right;margin-right:18rpx;' wx:if="{{duration_show}}">{{duration_show}}</text>
-      <text style='font-size:16rpx;color:#BB7E7E;opacity:0.8;float:left;margin-left:18rpx;' wx:if="{{current_time_show}}">{{current_time_show}}</text>
+      <text style='font-size:18rpx;color:#BB7E7E;opacity:0.8;float:right;margin-right:18rpx;' wx:if="{{duration_show}}">{{duration_show}}</text>
+      <text style='font-size:18rpx;color:#BB7E7E;opacity:0.8;float:left;margin-left:18rpx;' wx:if="{{current_time_show}}">{{current_time_show}}</text>
     </view>
   </view>
   <view wx:if="{{songciItem.foreword}}" style='margin-left:72rpx;margin-top:-10rpx;font-style:italic;'>
@@ -69,7 +69,7 @@
     </view>
     <view wx:if="{{playing}}" style="margin-top:5rpx;">
       <slider bindchanging="sliderChanging" bindchange="slider2change" step="2" min="1" block-size="15" value='{{slideValue}}' block-color="#BB7E7E" style="margin-top:5rpx;margin-bottom:5rpx;" />
-      <text style='font-size:16rpx;color:#BB7E7E;opacity:0.8;float:right;margin-right:16rpx;' wx:if="{{duration_show}}">{{duration_show}}</text>
+      <text style='font-size:18rpx;color:#BB7E7E;opacity:0.8;float:right;margin-right:18rpx;' wx:if="{{duration_show}}">{{duration_show}}</text>
       <text style='font-size:18rpx;color:#BB7E7E;opacity:0.8;float:left;margin-left:18rpx;' wx:if="{{current_time_show}}">{{current_time_show}}</text>
     </view>
   </view>

@@ -21,8 +21,9 @@
 
 .active {
   color: #bb7e7e;
-  border-bottom: 1.5rpx solid #bb7e7e;
-  font-weight: 600;
+  padding-bottom: 4rpx;
+  border-bottom: 3.5rpx dashed #bb7e7e;
+  font-weight: 700;
 }
 
 .indent {

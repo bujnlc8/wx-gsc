@@ -3,14 +3,14 @@
   <view wx:if="{{showhead}}">
     <include src="../wxSearchView/wxSearchView.wxml" />
     <view style='margin-top:10px;' wx:if="{{historyplay&&historyplay.length>0}}">
-      <view style='margin-left:5px;font-size:18rpx;'>最近播放</view>
+      <view style='margin-left:5px;font-size:20rpx;'>最近播放</view>
       <view style='border-bottom:1px solid #eee;'>
-        <text bindtap='go2detail' class='title myclick' data-id_='{{item.id}}' wx:for="{{historyplay}}" style='border:1px solid #eee;display:inline-block;height:2em;line-height:2em;font-size:14rpx;padding:3rpx 4rpx;margin:4rpx;border-radis:2rpx;position:relative;background-color: rgba(200, 200, 200, 0.3);'>{{item.title}}
-     <text style='display:inline-block;width:40rpx;height:40rpx;border-radius:20rpx;background-color:#2BB630;text-align:center;line-height:40rpx;font-size:18rpx;position:absolute;top:-8rpx;right:-8rpx;opacity:0.8;color:white;'>{{item.times}}</text>
+        <text bindtap='go2detail' class='title myclick' data-id_='{{item.id}}' wx:for="{{historyplay}}" style='border:1rpx solid #eee;display:inline-block;height:2em;line-height:2em;font-size:20rpx;padding:2rpx 4rpx;margin-right:40rpx;margin-top:10rpx;border-radis:4rpx;position:relative;background-color: rgba(200, 200, 200, 0.3);'>{{item.title}}
+     <text style='display:inline-block;width:40rpx;height:40rpx;border-radius:20rpx;background-color:#2BB630;text-align:center;line-height:40rpx;font-size:20rpx;position:absolute;top:-14rpx;right:-28rpx;opacity:0.8;color:white;'>{{item.times}}</text>
         </text>
       </view>
     </view>
-    <view style='margin-left:5px;margin-top:0.8em;;font-size:18rpx;'>搜索结果({{gscitems.length}})</view>
+    <view style='margin-left:5px;margin-top:0.8em;;font-size:20rpx;'>搜索结果({{gscitems.length}})</view>
   </view>
   <view wx:for="{{gscitems}}">
     <view class='itemSongci' wx:if="{{showhead}}">
@@ -35,7 +35,7 @@
     </view>
   </view>
   <navigator wx:if="{{currentplayId > 0}}" url='/pages/songci/songci?id={{currentplayId}}'>
-    <image class='playingicon' src='../../static/quan.png' style='width:70rpx;height:70rpx;position:fixed;bottom:60rpx;right:5px;z-index:999;'>
+    <image class='playingicon' src='../../static/quan.png' style='width:80rpx;height:80rpx;position:fixed;bottom:100rpx;right:5px;z-index:999;'>
     </image>
   </navigator>
 </view>

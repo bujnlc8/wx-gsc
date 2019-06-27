@@ -12,7 +12,7 @@
 .catalog {
   margin-left: 15rpx;
   margin-right: 15rpx;
-  margin-bottom: 40rpx;
+  padding-bottom: 40rpx;
 }
 
 .songci {
@@ -37,4 +37,19 @@
   display: inline-block;
   width: 25%;
   text-align: right;
+}
+
+@keyframes playingRotate {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(0.8);
+  }
+}
+.playingicon {
+  animation: playingRotate 4.5s ease-in-out infinite;
 }
