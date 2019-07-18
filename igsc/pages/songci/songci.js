@@ -289,16 +289,18 @@ Page({
               target_id = 4
               show_content = work.master_comment
             }
-            show_content = show_content.replace(/\n/g, "\n&emsp;&emsp;")
-            show_content = show_content.replace(/\t/g, "\n&emsp;&emsp;")
+            show_content = show_content.replace(/　　/g, "\n")
+            show_content = show_content.replace(/\n/g, "\n　　")
+            show_content = show_content.replace(/\t/g, "\n　　")
             if (work.id % 4 != 0) {
               var url = config.neteaseAudioUrl
             } else {
               var url = config.songciAudioUrl
             }
             if (work.layout == 'indent') {
-              work.content = work.content.replace(/\n/g, "\n&emsp;&emsp;")
-              work.content = work.content.replace(/\t/g, "\n&emsp;&emsp;")
+              work.content = work.content.replace(/　　/g, "\n")
+              work.content = work.content.replace(/\n/g, "\n　　")
+              work.content = work.content.replace(/\t/g, "\n　　")
             }
             that.setData({
               songciItem: work,
@@ -583,8 +585,9 @@ Page({
         show_content = gsc.master_comment
         break
     }
-    show_content = show_content.replace(/\n/g, "\n&emsp;&emsp;")
-    show_content = show_content.replace(/\t/g, "\n&emsp;&emsp;")
+    show_content = show_content.replace(/\　　/g, "\n")
+    show_content = show_content.replace(/\n/g, "\n　　")
+    show_content = show_content.replace(/\t/g, "\n　　")
     this.setData({
       currentTab: target_id,
       show_content: show_content

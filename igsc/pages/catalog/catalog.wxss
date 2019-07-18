@@ -1,7 +1,7 @@
 @import "../wxSearchView/wxSearchView.wxss";
 
 .itemSongci {
-  min-height: 2.4em;
+  min-height: 2.6em;
   border-bottom-width: 0.80rpx;
   border-bottom-style: dotted;
   border-bottom-color: rgba(187, 126, 126, 0.4);
@@ -24,6 +24,7 @@
   display: inline-block;
   width: 75%;
   line-height: 45rpx;
+  margin-top:15rpx;
 }
 
 .title {
@@ -37,6 +38,7 @@
   display: inline-block;
   width: 25%;
   text-align: right;
+  margin-top:15rpx;
 }
 
 @keyframes playingRotate {

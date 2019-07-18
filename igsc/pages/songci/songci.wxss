@@ -7,23 +7,25 @@
 
 .tabs {
   padding-top: 22rpx;
+  padding-bottom: 40rpx;
 }
 
 .tab-item {
   display: inline-block;
   width: 64rpx;
-  margin-left: 15rpx;
+  margin-right: 45rpx;
   font-family: 'myfont';
   height: 32rpx;
   line-height: 36rpx;
   font-size: 30rpx;
+  font-weight: 700;
 }
 
 .active {
   color: #bb7e7e;
   padding-bottom: 4rpx;
   border-bottom: 3.5rpx dashed #bb7e7e;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .indent {
@@ -38,7 +40,7 @@
 .title {
   font-size: 40rpx;
   text-align: center;
-  line-height: 60rpx;
+  margin-top:0.1em;
 }
 
 .title :hover {
@@ -61,14 +63,14 @@
 .content {
   font-size: 36rpx;
   margin-top: 10rpx;
-  line-height: 54rpx;
+  line-height: 1.8em;
 }
 
 .translation {
   margin-top: 10rpx;
-  text-indent: 60rpx;
   font-size: 32rpx;
-  line-height: 48rpx;
+  line-height: 1.8em;
+  text-indent: 2em;
 }
 
 .songci {

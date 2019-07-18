@@ -1,10 +1,8 @@
 <!--pages/songci/songci.wxml-->
 <view class='songci container'>
-  <view class='title'>
-    <text data-q='{{songciItem.work_title}}' data-id_='{{songciItem.id}}' bindtap='search_' style='display:inline-block;'>
+  <view class='title' data-q='{{songciItem.work_title}}' data-id_='{{songciItem.id}}' bindtap='search_'>
   {{songciItem.work_title}}
-  </text>
-    <image wx:if="{{songciItem.audio_id>0}}" src='../../static/sound.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;'></image>
+    <!-- <image wx:if="{{songciItem.audio_id>0}}" src='../../static/sound.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;margin-left:0.3em;float:left;'></image> -->
   </view>
   <view wx:if="{{songciItem.work_dynasty}}" class='myclick author' data-q='{{songciItem.work_author}}' data-id_='{{songciItem.id}}' bindtap='search_'>
     [{{songciItem.work_dynasty}}] {{songciItem.work_author}}
@@ -83,7 +81,7 @@
       <image src='{{songciItem.like==1 ? "../../static/liked.png":"../../static/like.png"}}' style='width:32rpx;height:32rpx;' data-like='{{songciItem.like}}'></image>
     </view>
     <!-- <view class='translation' style='{{(currentTab==4)||(currentTab==1)?"text-indent:2em;":""}}' bindlongpress='{{(currentTab==2||currentTab==1||currentTab==0)?"longPress":"longPressBack" }}'> -->
-    <view class='translation' style='{{(currentTab==4)||(currentTab==1)?"text-indent:2em;":""}}'>
+    <view class='translation'>
       <text decode='true' space='true'>{{show_content}}</text>
     </view>
   </view>
