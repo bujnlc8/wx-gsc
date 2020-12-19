@@ -132,17 +132,17 @@
 }
 
 .weui-search-bar__input {
-  height: 2.2rem;
-  line-height: 2.2rem;
-  font: 26rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  /* font: 26rpx; */
   padding: 0;
 }
 
 .weui-icon-clear {
+  z-index: 10000;
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 5rpx 14rpx;
+  top: 10rpx;
+  right: 20rpx;
   font-size: 0;
 }
 
@@ -162,10 +162,10 @@
 
 .weui-search-bar__cancel-btn {
   margin-left: 10rpx;
-  line-height: 2.2rem;
+  line-height: 60rpx;
   white-space: nowrap;
   font-size: 30rpx;
-  height: 2.2rem;
+  height: 60rpx;
 }
 
 .weui-search-bar__cancel-btn:hover {

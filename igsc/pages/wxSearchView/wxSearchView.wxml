@@ -28,7 +28,7 @@
       <view wx:if="{{wxSearchData.his[0]}}" class="wxSearchHistory" style="display:{{wxSearchData.value.length>0 ? 'none':'block'}}">
         <view class="wxSearchHistoryItem">
           <text class="wxSearchHistoryItemTitle">搜索记录</text>
-          <icon type="clear" bindtap="wxSearchDeleteAll" size="30rpx" />
+          <icon type="clear" bindtap="wxSearchDeleteAll" size="30rpx" style="z-index:20000;margin-top:10rpx;"/>
         </view>
         <view class="wxSearchKeyList">
           <block wx:for="{{wxSearchData.his}}" wx:key="his">

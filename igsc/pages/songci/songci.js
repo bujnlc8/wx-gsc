@@ -852,6 +852,23 @@ Page({
       }
     }
   },
+  onShareTimeline: function(){
+      var prefix = ''
+      if(this.data.audioId > 0){
+        prefix = '【音频】'
+      }
+      return {
+        title: prefix + this.data.currentSongci,
+        query: 'id=' + this.data.songciItem.id,
+        imageUrl: '/static/share.jpg',
+        success: function(res) {
+          util.showSuccess('分享成功')
+        },
+        fail: function(res) {
+          util.showSuccess('取消分享')
+        }
+      }
+  },
   longPressBack: function() {
     wx.redirectTo({
       url: '/pages/catalog/catalog',
