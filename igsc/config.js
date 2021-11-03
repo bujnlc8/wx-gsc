@@ -1,8 +1,3 @@
-/**
- * 小程序配置文件
- */
-
-// 此处主机域名修改成腾讯云解决方案分配的域名
 var host = 'https://igsc.wx.haihui.site';
 //var host = 'http://127.0.0.1:9090';
 var config = {

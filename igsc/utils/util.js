@@ -6,8 +6,8 @@ const formatTime = date => {
   return [year, month, day].map(formatNumber).join('-')
 }
 
-var timetrans= function(date) {
-  var date = new Date(date * 1000);//如果date为13位不需要乘1000
+var timetrans = function(date) {
+  var date = new Date(date * 1000);
   var Y = date.getFullYear() + '-';
   var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
   var D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate()) + ' ';
@@ -55,7 +55,7 @@ var pageConfirm = (url) => {
     content: '小程序最多能打开十层页面，是否要继续？',
     cancelText: '不要',
     confirmText: '继续',
-    success: function (res) {
+    success: function(res) {
       if (res.confirm) {
         wx.redirectTo({
           url: url
@@ -71,15 +71,15 @@ var pageConfirm = (url) => {
   });
 }
 
-var userLogin = function(){
+var userLogin = function() {
   wx.login({
-    success: function (loginCode) {
+    success: function(loginCode) {
       wx.request({
         url: config.service.host + '/user/auth/' + loginCode.code,
         header: {
           'content-type': 'application/json'
         },
-        success: function (res) {
+        success: function(res) {
           if (res.statusCode == 200) {
             if (res.data.code == 0) {
               var open_id = res.data.data.openid
@@ -100,21 +100,26 @@ var userLogin = function(){
           }
         }
       })
-    },fail:function(e){
+    },
+    fail: function(e) {
       console.log(e)
     }
   });
 }
 
-var loadFont = function(){
+var loadFont = function() {
   wx.getNetworkType({
-    success: function (res) {
+    success: function(res) {
       var networkType = res.networkType
       if (networkType == 'wifi') {
         try {
           wx.loadFontFace({
-            family: 'songkai',
-            source: 'url("https://qcloudtest-1256650966.cos.ap-guangzhou.myqcloud.com/font/songkai.ttf")'
+            global: true,
+            family: 'syst',
+            source: 'url("https://songci.nos-eastchina1.126.net/font/SourceHanSerifCN-Regular.otf")',
+            complete: function(res) {
+              console.log(res)
+            }
           });
         } catch (e) {
           console.log(e)
@@ -124,6 +129,14 @@ var loadFont = function(){
   })
 }
 
-module.exports = { formatTime, showBusy, 
-  showSuccess, showModel, closeToast, pageConfirm, 
-  userLogin, timetrans, loadFont}
+module.exports = {
+  formatTime,
+  showBusy,
+  showSuccess,
+  showModel,
+  closeToast,
+  pageConfirm,
+  userLogin,
+  timetrans,
+  loadFont
+}

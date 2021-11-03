@@ -1,12 +1,12 @@
 var config = require('config')
 var util = require('utils/util')
 App({
-  get_music_list: function () {
+  get_music_list: function() {
     var value = "音频"
     var key = 'search_音频' + util.formatTime(new Date())
     wx.getStorage({
       key: key,
-      success: function (res) {
+      success: function(res) {
         if (res && res.data) {
           var data = res.data
           var music_ids = []
@@ -16,9 +16,9 @@ App({
           wx.setStorageSync('music_ids', music_ids)
         }
       },
-      fail: function () {
+      fail: function() {
         wx.request({
-          url: config.songciUrl + 'query/' + value +"/main/abcd",
+          url: config.songciUrl + 'query/' + value + "/main/abcd",
           success(result) {
             if (!result || result.data.code != 0) {
               return
@@ -41,8 +41,7 @@ App({
   onLaunch() {
     try {
       var open_id = wx.getStorageSync('user_open_id')
-    } catch (e) {
-    }
+    } catch (e) {}
     if (!open_id) {
       util.userLogin()
     }
@@ -71,8 +70,8 @@ App({
         })
       }
       wx.setStorageSync('play_mode', play_mode ? play_mode : 'xunhuan')
-    } catch (e) { }
+    } catch (e) {}
     // 加载字体
-    // util.loadFont()
+    util.loadFont()
   }
 });

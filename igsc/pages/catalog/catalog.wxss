@@ -24,7 +24,7 @@
   display: inline-block;
   width: 75%;
   line-height: 45rpx;
-  margin-top:15rpx;
+  margin-top: 15rpx;
 }
 
 .title {
@@ -38,20 +38,23 @@
   display: inline-block;
   width: 25%;
   text-align: right;
-  margin-top:15rpx;
+  margin-top: 15rpx;
 }
 
 @keyframes playingRotate {
   0% {
     transform: scale(0.8);
   }
+
   50% {
     transform: scale(1.2);
   }
+
   100% {
     transform: scale(0.8);
   }
 }
+
 .playingicon {
   animation: playingRotate 4.5s ease-in-out infinite;
 }

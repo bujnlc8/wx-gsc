@@ -1,4 +1,3 @@
-// pages/songci/songci.js
 var config = require('../../config')
 var util = require('../../utils/util.js')
 Page({
@@ -18,57 +17,6 @@ Page({
     slideValue: 0,
     time2close: 0,
     closeplaytime: 0
-  },
-  text2audio: function(e) {
-    var that = this
-    var id_ = e.target.dataset.id_
-    var title = e.target.dataset.title
-    var author = e.target.dataset.author
-    wx.showLoading({
-      title: '音频加载中...',
-    })
-    wx.request({
-      url: config.service.host + '/songci/text2audio/' + id_,
-      success: function(res) {
-        if (res && res.statusCode == 200 && res.data.code == 0) {
-          var urls = res.data.data.data
-          if (!urls || urls.length == 0) {
-            wx.hideLoading();
-            return
-          }
-          var old_play_mode = that.get_play_mode();
-          wx.setStorageSync('old_play_mode', old_play_mode);
-          wx.setStorageSync('play_mode', 'hc')
-          that.setData({
-            mode: 'hc'
-          })
-          that.backgroundAudioManager.src = urls[0]
-          that.backgroundAudioManager.title = title
-          that.backgroundAudioManager.singer = author
-          that.backgroundAudioManager.coverImgUrl = that.data.poster
-          that.backgroundAudioManager.epname = 'i古诗词'
-          that.backgroundAudioManager.play()
-          wx.setStorageSync('text2audio', true)
-          wx.setStorageSync('text2audiourls', urls.slice(1))
-          wx.setStorageSync('text2audiotitle', title)
-          wx.setStorageSync('text2audioauthor', author)
-          setTimeout(() => {
-            wx.hideLoading();
-          }, 500)
-        } else {
-          wx.showToast({
-            title: '网络异常~~',
-            icon: 'none'
-          })
-        }
-      },
-      fail: function(e) {
-        wx.showToast({
-          title: '网络异常~~',
-          icon: 'none'
-        })
-      }
-    })
   },
   setTimed: function() {
     var that = this
@@ -436,8 +384,6 @@ Page({
         })
       }
     }
-    wx.setStorageSync('text2audio', false)
-    wx.setStorageSync('text2audiourls', [])
   },
   operate_play: function(e) {
     var key = e.target.dataset.key
@@ -525,8 +471,6 @@ Page({
       if (that.data.songciItem && that.data.songciItem.work_title) {
         that.record_play(that.data.songciItem.id, that.data.songciItem.work_title + '-' + that.data.songciItem.work_author);
       }
-      wx.setStorageSync('text2audio', false)
-      wx.setStorageSync('text2audiourls', [])
     }
   },
   record_play: function(id_, title) {
@@ -684,41 +628,19 @@ Page({
    */
   onReady: function(e) {
     var that = this
-    var mode = that.get_play_mode()
     that.backgroundAudioManager = wx.getBackgroundAudioManager();
     this.backgroundAudioManager.onEnded(() => {
-      var text2audio = false
-      try {
-        text2audio = wx.getStorageSync('text2audio')
-      } catch ($e) {}
-      if (text2audio) {
-        var urls = wx.getStorageSync('text2audiourls')
-        var title = wx.getStorageSync('text2audiotitle')
-        var author = wx.getStorageSync('text2audioauthor')
-        if (urls.length > 0) {
-          that.backgroundAudioManager.src = urls[0]
-          that.backgroundAudioManager.title = title
-          that.backgroundAudioManager.singer = author
-          that.backgroundAudioManager.coverImgUrl = that.data.poster
-          that.backgroundAudioManager.epname = 'i古诗词'
-          that.backgroundAudioManager.play()
-          wx.setStorageSync('text2audio', true)
-          wx.setStorageSync('text2audiourls', urls.slice(1))
-        } else {
-          wx.setStorageSync('text2audio', false)
-          that.reset_playmode();
-        }
-      } else {
         var mode = that.get_play_mode()
         if (mode != 'hc') {
           that.do_operate_play('next', mode)
         } else {
           that.reset_playmode()
         }
-      }
     });
     this.backgroundAudioManager.onPause(() => {
-      return false
+      that.setData({
+        playing: false
+      });
     });
     this.backgroundAudioManager.onStop(() => {
       return false
@@ -741,7 +663,12 @@ Page({
       wx.hideLoading();
     });
     this.backgroundAudioManager.onPlay(() => {
-      wx.hideLoading();
+       wx.hideLoading();
+       if(!that.data['playing']){
+        that.setData({
+          playing: true
+        })
+       }
     });
     this.backgroundAudioManager.onPrev(() => {
       var mode = that.get_play_mode()
@@ -828,7 +755,6 @@ Page({
     var pages = getCurrentPages()
     var url = '/pages/songci/songci?id=' + key
     if (pages.length == config.maxLayer) {
-      //util.pageConfirm(url)
       wx.redirectTo({
         url: url,
       })
@@ -852,22 +778,22 @@ Page({
       }
     }
   },
-  onShareTimeline: function(){
-      var prefix = ''
-      if(this.data.audioId > 0){
-        prefix = '【音频】'
+  onShareTimeline: function() {
+    var prefix = ''
+    if (this.data.audioId > 0) {
+      prefix = '【音频】'
+    }
+    return {
+      title: prefix + this.data.currentSongci,
+      query: 'id=' + this.data.songciItem.id,
+      imageUrl: '/static/share.jpg',
+      success: function(res) {
+        util.showSuccess('分享成功')
+      },
+      fail: function(res) {
+        util.showSuccess('取消分享')
       }
-      return {
-        title: prefix + this.data.currentSongci,
-        query: 'id=' + this.data.songciItem.id,
-        imageUrl: '/static/share.jpg',
-        success: function(res) {
-          util.showSuccess('分享成功')
-        },
-        fail: function(res) {
-          util.showSuccess('取消分享')
-        }
-      }
+    }
   },
   longPressBack: function() {
     wx.redirectTo({

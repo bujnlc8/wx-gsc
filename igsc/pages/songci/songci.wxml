@@ -1,7 +1,6 @@
-<!--pages/songci/songci.wxml-->
 <view class='songci container'>
   <view class='title' data-q='{{songciItem.work_title}}' data-id_='{{songciItem.id}}' bindtap='search_'>
-  {{songciItem.work_title}}
+    {{songciItem.work_title}}
     <!-- <image wx:if="{{songciItem.audio_id>0}}" src='../../static/sound.png' style='width:1.4em;height:1.4em;vertical-align:-0.3em;margin-left:0.3em;float:left;'></image> -->
   </view>
   <view wx:if="{{songciItem.work_dynasty}}" class='myclick author' data-q='{{songciItem.work_author}}' data-id_='{{songciItem.id}}' bindtap='search_'>
@@ -37,7 +36,7 @@
   </view>
   <view wx:if="{{songciItem.foreword}}" style='margin-left:72rpx;margin-top:-10rpx;font-style:italic;'>
     <text selectable='true' decode="true" space="true">
-    {{songciItem.foreword}}
+      {{songciItem.foreword}}
     </text>
   </view>
   <view class='content {{songciItem.layout}}'>
