@@ -1,0 +1,20 @@
+{
+  "pages": ["pages/catalog/catalog", "pages/gsc/gsc"],
+  "window": {
+    "backgroundColor": "#FCF9F4",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#FCF9F4",
+    "navigationBarTitleText": "i古诗词",
+    "navigationBarTextStyle": "black",
+    "enablePullDownRefresh": true
+  },
+  "sitemapLocation": "sitemap.json",
+  "requiredBackgroundModes": ["audio"],
+  "resizable": true,
+  "plugins": {
+    "WechatSI": {
+      "version": "0.3.5",
+      "provider": "wx069ba97219f66d99"
+    }
+  }
+}

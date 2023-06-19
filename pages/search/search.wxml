@@ -1,0 +1,58 @@
+<view class='container'>
+    <view class="weui-search-bar">
+        <switch bindchange="show_hide_search_box" checked="{{show_search_box}}" color="#f3f3f2" style="transform: scale(0.8);height: 31px;"></switch>
+        <image src='{{recording ? "../../static/micoing.png": "../../static/mico.png"}}' style='width:31px;height:31px;margin-right: 5px;margin-left: -5px;cursor: pointer;' bindtap="mico_recognize"></image>
+        <view class="weui-search-bar__form" style="flex: 10;">
+            <view class="weui-search-bar__box">
+                <input type="text" class="weui-search-bar__input" placeholder="{{ wx_search_data.value.length == 0 ? (fti ?'請輸入查詢內容': '请输入查询内容'): ''}}" placeholder-class="placeholder" value="{{wx_search_data.value}}" bindinput="wx_search_input" bindconfirm="wx_search_confirm" />
+            </view>
+            <view class="weui-icon-clear" wx:if="{{wx_search_data.value && wx_search_data.value.length > 0}}" bindtap="wx_search_clear">
+                <icon color="#c0c6c9" type="clear" size="16px" style="float: right;margin-right: 5px;margin-top: 8px;cursor: pointer;"></icon>
+            </view>
+        </view>
+        <view class="weui-search-bar__cancel-btn" bindtap="wx_search_confirm">
+            <text data-key='search' style="cursor: pointer;">搜索</text>
+        </view>
+    </view>
+    <view class="wx_search">
+        <view class="wx_search_inner">
+            <view class="wx_search_mind_key">
+                <view class="wx_search_mind_key_list">
+                    <block wx:for="{{wx_search_data.tip_keys}}" wx:key="*this">
+                        <view class="wx_search_mind_key_item" bindtap="wx_search_key_tap" data-key="{{item}}">{{item}}</view>
+                    </block>
+                </view>
+            </view>
+            <view wx:if="{{wx_search_data.value && wx_search_data.value.length > 0}}" style="margin-top: 5px;">
+                <radio-group bindchange="radio_change">
+                    <radio class="search_radio" value="all" checked="{{search_pattern=='all'}}" color="#7c4b00"><text>全部</text></radio>
+                    <radio value="title" class="search_radio" checked="{{search_pattern=='title'}}" color="#7c4b00"><text>{{fti?'標題': '标题'}}</text></radio>
+                    <radio value="author" class="search_radio" checked="{{search_pattern=='author'}}" color="#7c4b00"><text>作者</text></radio>
+                    <radio value="dynasty" class="search_radio" checked="{{search_pattern=='dynasty'}}" color="#7c4b00"><text>朝代</text></radio>
+                    <radio value="content" class="search_radio" checked="{{search_pattern=='content'}}" color="#7c4b00"><text>{{fti? '內容': '内容'}}</text></radio>
+                </radio-group>
+            </view>
+            <view wx:if="{{show_search_box}}">
+                <view wx:if="{{wx_search_data.his[0]}}" class="wx_search_history" style="display:{{wx_search_data.value.length>0 ? 'none':'block'}}">
+                    <view class="wx_search_history_item">
+                        <text class="wx_search_history_item_title">{{fti? '搜索記錄': '搜索记录'}}</text>
+                        <icon type="clear" color="#c0c6c9" bindtap="wx_search_delete_all" size="16px" style="z-index:20000;margin-top:6px;cursor: pointer;" />
+                    </view>
+                    <view class="wx_search_key_list">
+                        <block wx:for="{{wx_search_data.his}}" wx:key="*this">
+                            <view class="wx_search_key_item" bindtap="wx_search_key_tap" data-key="{{item}}">{{item}}</view>
+                        </block>
+                    </view>
+                </view>
+                <view class="wx_search_key" style="display:{{wx_search_data.value.length>0 ? 'none':'block'}}">
+                    <text wx:if="{{wx_search_data.hot_keys[0]}}" class="wx_search_title">{{fti? '搜索熱點': '搜索热点'}}</text>
+                    <view class="wx_search_key_list">
+                        <block wx:for="{{wx_search_data.hot_keys}}" wx:key="*this">
+                            <view class="wx_search_key_item" bindtap="wx_search_key_tap" data-key="{{item}}">{{item}}</view>
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

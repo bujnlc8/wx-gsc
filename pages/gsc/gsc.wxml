@@ -1,0 +1,184 @@
+<view class="board" wx:if="{{show_feedback || show_playlist_flag}}" catchtouchmove="catchtouchmove"></view>
+<view class='gsc container {{(playlist.length > 9 && show_playlist_flag) ? "no_scroll": ""}}'>
+    <view id="location_id"></view>
+    <view wx:if="{{!work_item.split_title || work_item.split_title.length == 0}}" class='title' data-q='{{work_item.work_title}}' data-id_='{{work_item.id}}' bindlongpress='search_' data-search_pattern='title' style="cursor: pointer;">{{work_item.work_title}}</view>
+    <view wx:if="{{work_item.split_title && work_item.split_title.length > 0}}" class='title' data-q='{{work_item.work_title}}' data-id_='{{work_item.id}}' bindlongpress='search_' data-search_pattern='title' style="cursor: pointer;">
+        <text class="{{item.k? 'hl' : (item.a ? 'anno_text': '')}}" wx:for="{{work_item.split_title}}" bindtap="{{item.a?'show_anno':''}}" data-anno="{{item.a?item.s:''}}" style="cursor: pointer;">{{item.s}}</text>
+    </view>
+    <view wx:if="{{work_item.work_dynasty}}" class='author' data-q='{{work_item.work_author}}' data-id_='{{work_item.id}}' data-search_pattern='author' bindlongpress='search_'>
+        {{work_item.work_dynasty}} · {{work_item.work_author}}
+    </view>
+    <view wx:if="{{work_item.content.length>=200}}">
+        <view style='display:flex;flex-direction:row;margin-top:8px;' wx:if="{{work_item.audio_id > 0 && !folding}}">
+            <view style='flex:40;text-align:right;'>
+                <navigator redirect url='/pages/catalog/catalog' style='display:inline-block;'>
+                    <image src='../../static/home.png' class="operate_audio"></image>
+                </navigator>
+                <view bindtap="show_playlist" style='display:inline-block;'>
+                    <image src='../../static/list.png' class="operate_audio"></image>
+                </view>
+                <image src='../../static/up_audio.png' class="operate_audio" bindtap='operate_play' data-key='up'></image>
+            </view>
+            <view style='flex:20;text-align:center;'>
+                <image src='../../static/{{playing && playing_audio_id==work_item.audio_id ? "pause" : "play_audio"}}.png' class="operate_audio" bindtap='play_back_audio'></image>
+            </view>
+            <view style='flex:45;text-align:left;position:relative;'>
+                <image src='../../static/next_audio.png' class="operate_audio" bindtap='operate_play' data-key='next'></image>
+                <image wx:if="{{play_mode}}" src='../../static/{{play_mode}}.png' class="operate_audio" bindtap='change_play_mode'></image>
+                <image src='../../static/timed.png' class="operate_audio" bindtap='set_timed'>
+                </image>
+                <text wx:if="{{time2close!=0}}" style='text-align:center;line-height:2em;display:inline-block;width:2em;height:2em;border-radius:1em;font-size:5px;color:white;background-color:#7c4b00;opacity:0.8;position:absolute;top:0px;margin-left:-14px;'>{{close_play_time}}</text>
+            </view>
+        </view>
+        <view style="margin-top:2.5px;" wx:if="{{work_item.audio_id >0 && !folding}}">
+            <slider activeColor="#7c4b00" backgroundColor="#6171721a" bindchanging="slider_changing" bindchange="slider2change" step="1" min="1" block-size="15" value='{{slide_value}}' block-color="#7c4b00" style="margin-top:2.5px;margin-bottom:2.5px;" />
+            <text style='font-size:9px;color:#b9adad;opacity:0.8;float:right;margin-right:9px;' wx:if="{{duration_show}}">{{duration_show}}</text>
+            <text style='font-size:9px;color:#7c4b00;opacity:0.8;float:left;margin-left:9px;' wx:if="{{current_time_show}}">{{current_time_show}}</text>
+        </view>
+    </view>
+    <view wx:if="{{work_item.foreword}}" class='foreward' style='margin-left:34px;margin-top:5px;text-indent: 2em;font-style: oblique;font-size: 13px;'>
+        <view wx:if="{{!work_item.split_foreword || work_item.split_foreword.length == 0}}">
+            <text selectable='true' decode="true" space='nbsp'>{{work_item.foreword}}</text>
+        </view>
+        <view wx:if="{{work_item.split_foreword && work_item.split_foreword.length > 0}}">
+            <text class="{{item.k? 'hl' : (item.a ? 'anno_text': '')}}" wx:for="{{work_item.split_foreword}}" selectable="true" decode="true" space='nbsp' bindtap="{{item.a?'show_anno':''}}" data-anno="{{item.a?item.s:''}}">{{item.s}}</text>
+        </view>
+    </view>
+    <view class='content {{work_item.layout}}'>
+        <view wx:if="{{!work_item.split_content || work_item.split_content.length == 0}}">
+            <text selectable="true" decode="true" space='nbsp'>{{work_item.content}}</text>
+        </view>
+        <view wx:if="{{work_item.split_content && work_item.split_content.length > 0}}">
+            <text class="{{item.k? 'hl' : (item.a ? 'anno_text': '')}}" wx:for="{{work_item.split_content}}" selectable="true" decode="true" space='nbsp' bindtap="{{item.a?'show_anno':''}}" data-anno="{{item.a?item.s:''}}">{{item.s}}</text>
+        </view>
+    </view>
+    <view wx:if="{{work_item.content.length < 200}}">
+        <view style='display:flex;flex-direction:row;margin-top:8px;' wx:if="{{work_item.audio_id>0 && !folding}}">
+            <view style='flex:40;text-align:right;'>
+                <navigator redirect url='/pages/catalog/catalog' style='display:inline-block;'>
+                    <image src='../../static/home.png' class="operate_audio"></image>
+                </navigator>
+                <view bindtap="show_playlist" style='display:inline-block;'>
+                    <image src='../../static/list.png' class="operate_audio"></image>
+                </view>
+                <image src='../../static/up_audio.png' class="operate_audio" bindtap='operate_play' data-key='up'></image>
+            </view>
+            <view style='flex:20;text-align:center;'>
+                <image src='../../static/{{playing && playing_audio_id == work_item.audio_id ? "pause" : "play_audio"}}.png' class="operate_audio" bindtap='play_back_audio'></image>
+            </view>
+            <view style='flex:45;text-align:left;position:relative;'>
+                <image src='../../static/next_audio.png' class="operate_audio" bindtap='operate_play' data-key='next'></image>
+                <image wx:if="{{play_mode}}" src='../../static/{{play_mode}}.png' class="operate_audio" bindtap='change_play_mode'></image>
+                <image src='../../static/timed.png' class="operate_audio" bindtap='set_timed'>
+                </image>
+                <text wx:if="{{time2close!=0}}" style='text-align:center;line-height:2em;display:inline-block;width:2em;height:2em;border-radius:1em;font-size:5px;color:white;background-color:#7c4b00;opacity:0.8;position:absolute;top:0px;margin-left:-14px;'>{{close_play_time}}</text>
+            </view>
+        </view>
+        <view style="margin-top:2.5px;" wx:if="{{work_item.audio_id >0 && !folding}}">
+            <slider activeColor="#7c4b00" backgroundColor="#6171721a" bindchanging="slider_changing" bindchange="slider2change" step="1" min="1" block-size="15" value='{{slide_value}}' block-color="#7c4b00" style="margin-top:2.5px;margin-bottom:2.5px;" />
+            <text style='font-size:9px;color:#7c4b00;opacity:0.8;float:right;margin-right:9px;' wx:if="{{duration_show}}">{{duration_show}}</text>
+            <text style='font-size:9px;color:#7c4b00;opacity:0.8;float:left;margin-left:9px;' wx:if="{{current_time_show}}">{{current_time_show}}</text>
+        </view>
+    </view>
+    <!-- 以下为顶部按钮及赏析等 -->
+    <view class='tabs' wx:if="{{!folding}}">
+        <!--加一个banner广告吧-->
+        <view wx:if="{{work_item.intro}}" bindtap='change_content' data-item='0' class='tab-item {{current_tab==0?"active":""}}'>{{fti? '簡介':'简介'}}</view>
+        <view wx:if="{{work_item.annotation}}" bindtap='change_content' data-item='1' class='tab-item {{current_tab==1?"active":""}}'>{{fti? '註釋': '注释'}}</view>
+        <view wx:if="{{work_item.translation}}" bindtap='change_content' data-item='2' class='tab-item {{current_tab==2?"active":""}}'>{{fti? '譯文': '译文'}}</view>
+        <view wx:if="{{work_item.appreciation}}" bindtap='change_content' data-item='3' class='tab-item {{current_tab==3?"active":""}}'>{{fti? '賞析': '赏析'}}</view>
+        <view bindtap="do_copy" class='tab-item icon-item'>
+            <image src="../../static/copy.png" class='bottom_icons'></image>
+        </view>
+        <view bindtap="change_fti" class='tab-item icon-item' data-fti='{{fti}}'>
+            <image src='{{fti ? "../../static/jti.png": "../../static/fti.png"}}' class='bottom_icons'></image>
+        </view>
+        <view bindtap="add_list" class='tab-item icon-item' data-id_='{{work_item.id}}' wx:if="{{work_item.audio_id > 0}}">
+            <image src='../../static/add_list.png' class='bottom_icons'></image>
+        </view>
+        <view bindtap="feedback" class='tab-item icon-item' data-id_='{{work_item.id}}'>
+            <image src='../../static/feedback.png' class='bottom_icons'></image>
+        </view>
+        <view bindtap="download_audio" class='tab-item icon-item' data-id_='{{work_item.id}}' wx:if="{{work_item.audio_id > 0}}" data-downloaded="{{downloaded}}">
+            <image src='{{ downloaded ? "../../static/downloaded.png" : "../../static/download.png"}}' class='bottom_icons'></image>
+        </view>
+        <view bindtap="speak" class='tab-item icon-item' data-speeching='{{speeching && speeching_id == work_item.id}}'>
+            <image src='{{speeching &&  speeching_id == work_item.id ? "../../static/speak.png":"../../static/un_speak.png"}}' class='bottom_icons'></image>
+        </view>
+        <view bindtap="operate_like" class='tab-item icon-item' data-like='{{work_item.like}}'>
+            <image src='{{work_item.like==1 ? "../../static/liked.png":"../../static/like.png"}}' class='bottom_icons'></image>
+        </view>
+        <view class='translation' bindtouchstart="touch_start" bindtouchend="touch_end" data-currentab="{{current_tab}}">
+            <view style="margin-top: {{systemInfo.platform == 'android' ? 10: 5}}px;" wx:if="{{show_ad}}">
+                <!-- <ad unit-id="adunit-bea78055788f8f67" ad-intervals="30" wx:if="{{current_tab == 0}}"></ad> -->
+                <!-- <ad unit-id="adunit-c97743fdab973952" ad-intervals="30" wx:if="{{current_tab == 1}}"></ad> -->
+                <!-- <ad unit-id="adunit-d8db1fc2ab085faa" ad-intervals="30" wx:if="{{current_tab == 2}}"></ad> -->
+                <!-- <ad unit-id="adunit-67cee9be0524af12" ad-intervals="30" wx:if="{{current_tab == 3}}"></ad> -->
+                <ad unit-id="adunit-5a48c48642e68326" ad-intervals="30" ad-type="video" ad-theme="white" wx:if="{{current_tab == 0}}" style="z-index: 0;"></ad>
+                <ad unit-id="adunit-283d6bb06f0834a5" ad-intervals="30" wx:if="{{current_tab == 1}}" ad-type="video" ad-theme="white"></ad>
+                <ad unit-id="adunit-c178ae07d59a3ea3" ad-intervals="30" wx:if="{{current_tab == 2}}" ad-type="video" ad-theme="white"></ad>
+                <ad unit-id="adunit-32231029bb9c3e31" ad-intervals="30" wx:if="{{current_tab == 3}}" ad-type="video" ad-theme="white"></ad>
+            </view>
+            <text decode='true' space='nbsp' selectable="true">{{show_content}}</text>
+        </view>
+    </view>
+    <!--以下为折叠-->
+    <view bindtap="do_fold" data-folding="{{folding}}" style="position: fixed;right: 0px;bottom: 0px;opacity: 0.3;cursor: pointer;">
+        <image src='{{folding ? "../../static/unfold.png":"../../static/fold.png"}}' style='width:31px;height:31px;z-index: 99999;'></image>
+    </view>
+    <!--以下为注释-->
+    <view style="display: {{annotation_detail.show ? 'inherit': 'none'}};position: absolute;left: {{annotation_detail.left}}px;top: {{annotation_detail.top}}px;background-color: #f3f3f2; color:#392f41;border-radius: 10px;padding: 5px;border: 0.5px solid #a61b29; margin-right: 10px;cursor: pointer;font-size: 13px;z-index: 1002;" bindtap="close_anno">{{annotation_detail.detail}}</view>
+    <!--以下为播放列表界面-->
+    <view wx:if="{{playlist.length > 0 && show_playlist_flag}}" class="playlist">
+        <view class="playlist_text">
+            <icon type="clear" style="float: right;margin-right: 8px;margin-top: 5px;cursor: pointer;" color="#c0c6c9" size="16px" catchtap="show_playlist"></icon>
+            <text style="display: inline-block;line-height:26px;height: 16px;">播放列表({{playlist.length}})</text>
+            <image src="../../static/rubbish.png" style='width:16px;height:16px;float: right;margin-top: 5px;margin-right: 25px;cursor: pointer;' catchtap="remove_all_playlist"></image>
+        </view>
+        <view wx:for="{{playlist}}" wx:key="work_id">
+            <view id="item{{index+1}}">
+                <view style="display: flex;">
+                    <view style="flex: 10;">
+                        <view class='play_item' style="{{playing_audio_id ==item.work_id?'color:#7c4b00;font-weight:700;':''}}" bindtap='go2detail_and_play' data-id_='{{item.work_id}}'><text class="play_item_title">{{index+1}}.{{item.title}}</text><text style="font-size: 10px;cursor: pointer;" decode="true">&emsp;{{item.author}}</text>
+                        </view>
+                    </view>
+                    <image src="../../static/clear.png" style='width:17px;height:17px;float: right;margin-top: 5px;margin-right: 8px;padding-left: 10px;padding-bottom: 10px;cursor: pointer;' data-id_='{{item.work_id}}' catchtap="remove_from_playlist"></image>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--以下为错误反馈-->
+    <view wx:if="{{show_feedback}}" class="feedback">
+        <view class="feedback_text">
+            <icon type="clear" style="float: right;margin-right: 8px;margin-top: 5px;cursor: pointer;" color="#c0c6c9" size="16px" bindtap="close_feedback"></icon>
+            <text style="display: inline-block;height: 26px;line-height: 26px;">{{fti ? '錯誤反饋': '错误反馈'}}</text>
+        </view>
+        <view class="feedback-bottom">
+            <checkbox-group bindchange="feedback_checked">
+                <view class="weui-cell__hd">
+                    <checkbox value="1" color="#617172" class="feedback_checkbox">{{fti ? '標題有誤': '标题有误'}}</checkbox>
+                    <checkbox value="2" color="#617172" class="feedback_checkbox" style="margin-left: 110px;">{{fti ? '作者有誤': '作者有误'}}</checkbox>
+                </view>
+                <view class="weui-cell__hd">
+                    <checkbox value="4" color="#617172" class="feedback_checkbox">{{fti ? '內容有誤': '内容有误'}}</checkbox>
+                    <checkbox value="8" color="#617172" class="feedback_checkbox" style="margin-left: 110px;">{{fti ? '註釋有誤': '注释有误'}}</checkbox>
+                </view>
+                <view class="weui-cell__hd">
+                    <checkbox value="32" color="#617172" class="feedback_checkbox">{{fti ? '排版錯亂': '排版错乱'}}</checkbox>
+                    <checkbox value="16" color="#617172" class="feedback_checkbox" style="margin-left: 110px;" wx:if="{{work_item.audio_id > 0}}">{{fti ? '音頻有誤': '音频有误'}}</checkbox>
+                    <checkbox value="64" color="#617172" class="feedback_checkbox" style="margin-left: 110px;" wx:if="{{work_item.audio_id == 0}}">{{fti ? '其他錯誤': '其他错误'}}</checkbox>
+                </view>
+                <view class="weui-cell__hd">
+                    <checkbox value="64" color="#617172" class="feedback_checkbox" wx:if="{{work_item.audio_id > 0}}">{{fti ? '其他錯誤': '其他错误'}}</checkbox>
+                </view>
+            </checkbox-group>
+            <textarea placeholder="{{fti ? '請輸入錯誤詳細說明，以便修正...': '请输入错误详细说明，以便修正...'}}" class="remark" placeholder-style="color:#617172;" value="{{feedback_remark}}" bindinput="feedback_remark_input" maxlength="500" adjust-position="true"></textarea>
+            <view style="display: flex;margin-top: 10px;">
+                <input type="text" style="flex: 5;height: 42px;border: 0.5px dashed #617172; border-radius: 5px;margin-left: 13px;padding-left: 8px;caret-color: #617172;" placeholder="{{fti ? '6位數字驗證碼': '6位数字验证码'}}" bindinput="captcha_input" value="{{captcha_data}}" />
+                <image bindtap="refresh" src="data:image/png;base64,{{captcha.captcha}}" style="height: 42px;width: 131px;margin-right: 13px;margin-left: 5px;"></image>
+            </view>
+            <button type="primary" style="color: #617172;margin-top: 10px;margin-left: 13px;margin-right: 13px;border:0.5px dashed #617172;margin-bottom: 10px;cursor: pointer;" bindtap="feedback_submit" plain="true">提交</button>
+        </view>
+    </view>
+    <!--结束-->
+</view>

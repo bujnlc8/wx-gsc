@@ -1,0 +1,71 @@
+@import "../search/search.wxss";
+
+.item_work {
+  border-bottom-width: 0.4px;
+  border-bottom-style: dotted;
+  border-bottom-color: #61717266;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  cursor: pointer;
+}
+
+.catalog {
+  padding-left: 9px;
+  padding-right: 9px;
+  padding-bottom: 10px;
+}
+
+.content_text {
+  font-size: 14px;
+  display: inline-block;
+  width: 75%;
+  line-height: 24px;
+  height: 24px;
+  margin-top: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.title {
+  font-size: 17px;
+  display: inline-block;
+  padding-right: 2em;
+  cursor: pointer;
+}
+
+.author {
+  font-size: 14px;
+  display: inline-block;
+  width: 25%;
+  text-align: right;
+  margin-top: 10px;
+  line-height: 24px;
+  height: 24px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@keyframes playingRotate {
+  0% {
+    transform: scale(0.8);
+  }
+
+  50% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(0.8);
+  }
+}
+
+.playingicon {
+  animation: playingRotate 4.5s ease-in-out infinite;
+}
+
+#top_search {
+  width: calc(100% - 19px);
+}
