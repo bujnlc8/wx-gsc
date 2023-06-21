@@ -323,6 +323,7 @@ Page({
             show_content = work.appreciation;
           }
           show_content = show_content.replace(/　　/g, "");
+          show_content = show_content.replace(/　/g, "");
           show_content = show_content.replace(/\n/g, "\n&emsp;&emsp;");
           show_content = show_content.replace(/\t/g, "\n&emsp;&emsp;");
           show_content = show_content.replace(/\r\n/g, "\n");
@@ -330,6 +331,7 @@ Page({
           show_content = "&emsp;&emsp;" + show_content;
           if (work.layout == "indent") {
             work.content = work.content.replace(/　　/g, "");
+            work.content = work.content.replace(/　/g, "");
             work.content = work.content.replace(/\n/g, "\n&emsp;&emsp;");
             work.content = work.content.replace(/\t/g, "\n&emsp;&emsp;");
             work.content = work.content.replace(/\r\n/g, "\n");
@@ -362,10 +364,6 @@ Page({
             annotation_dict[tmp0] = tmp.slice(1).join("：");
             annotation_reserve_dict[tmp.slice(1).join("：")] = tmp[0];
           }
-          //   that.setData({
-          //     annotation_dict: annotation_dict,
-          //     annotation_reserve_dict: annotation_reserve_dict,
-          //   });
           var annotation_words = Object.keys(annotation_dict).filter(
             (item) => item && item.length > 0
           );
@@ -536,7 +534,7 @@ Page({
               data.author,
               data.id,
               data.audio_id,
-              3001
+              101
             );
           } else {
             wx.showToast({
@@ -1127,22 +1125,8 @@ Page({
       },
     });
   },
-  download_audio: function (e) {
+  do_download_audio: function (work_id) {
     var that = this;
-    var work_id = e.currentTarget.dataset.id_;
-    var downloaded = e.currentTarget.dataset.downloaded;
-    if (downloaded) {
-      wx.showModal({
-        title: "提示",
-        content: "是否删除下载的音频？",
-        complete: (res) => {
-          if (res.confirm) {
-            that.remove_cached_audio(work_id);
-          }
-        },
-      });
-      return;
-    }
     wx.request({
       url: config.service.host + "/gsc/audio_url",
       enableHttp2: true,
@@ -1210,6 +1194,62 @@ Page({
       },
     });
   },
+  download_audio: function (e) {
+    var that = this;
+    var work_id = e.currentTarget.dataset.id_;
+    var downloaded = e.currentTarget.dataset.downloaded;
+    if (downloaded) {
+      wx.showModal({
+        title: "提示",
+        content: "是否删除下载的音频？",
+        complete: (res) => {
+          if (res.confirm) {
+            that.remove_cached_audio(work_id);
+          }
+        },
+      });
+      return;
+    }
+    if (
+      !(systemInfo.platform == "ios" || systemInfo.platform == "android") ||
+      !app.globalData.show_ad
+    ) {
+      that.do_download_audio(work_id);
+      return;
+    }
+    // 在页面中定义激励视频广告
+    let videoAd = null;
+    var havedown = false;
+    // 在页面onLoad回调事件中创建激励视频广告实例
+    if (wx.createRewardedVideoAd) {
+      videoAd = wx.createRewardedVideoAd({
+        adUnitId: "adunit-bf926c50f4a5f916",
+      });
+      videoAd.onLoad(() => {});
+      videoAd.onError((err) => {
+        console.log("onError");
+      });
+      videoAd.onClose((res) => {
+        if (res && res.isEnded && !havedown) {
+          havedown = true;
+          that.do_download_audio(work_id);
+        }
+      });
+    }
+    // 用户触发广告后，显示激励视频广告
+    if (videoAd) {
+      videoAd.show().catch(() => {
+        // 失败重试
+        videoAd
+          .load()
+          .then(() => videoAd.show())
+          .catch((err) => {
+            havedown = true;
+            that.do_download_audio(work_id);
+          });
+      });
+    }
+  },
   play_sound: function (
     work_title,
     work_author,
@@ -1265,7 +1305,7 @@ Page({
             title: that.data.fti ? "音頻加載中..." : "音频加载中...",
           });
           var audio_url = res.data.data + "?t=" + app.get_api_version();
-          if (content_length <= 3000) {
+          if (content_length <= 100) {
             var dest_path = that.make_cached_audio_path(work_id);
             wx.downloadFile({
               url: audio_url,
@@ -1836,21 +1876,37 @@ Page({
     });
   },
   onPageScroll: function () {
+    if (new Date().getTime() % 2 != 0) {
+      return;
+    }
     var that = this;
     var query = wx.createSelectorQuery().in(this);
     query.select("#location_id").boundingClientRect();
     query.exec((res) => {
       if (res.length > 0 && res[0]) {
         if (res[0].top < -24) {
+          if (that.data.scrollSetTitle) {
+            return;
+          }
           wx.setNavigationBarTitle({
             title:
               that.data.work_item.work_title +
               "  " +
               that.data.work_item.work_author +
               "  " +
-              that.data.work_item.content.replace(/&emsp;/g, ""),
+              that.data.work_item.content
+                .replace(/&emsp;/g, "")
+                .replaceAll("\n", " ")
+                .replaceAll("\r", " "),
+          });
+          that.setData({
+            scrollSetTitle: true,
+            scrollSetOriginTitle: false,
           });
         } else {
+          if (that.data.scrollSetOriginTitle) {
+            return;
+          }
           if (that.data.from_page != "like") {
             var title = "i古诗词";
             if (that.data.fti) {
@@ -1864,6 +1920,10 @@ Page({
               title: "收藏",
             });
           }
+          that.setData({
+            scrollSetTitle: false,
+            scrollSetOriginTitle: true,
+          });
         }
       }
     });
@@ -2113,10 +2173,16 @@ Page({
         : "确定要清除当前播放列表吗？",
       success: function (res) {
         if (res.confirm) {
-          wx.removeStorage({
+          wx.setStorage({
             key: "audio_ids_playlist",
+            data: {
+              audio_ids: [],
+              playlist: [],
+            },
+            success: function () {
+              that.set_play_list();
+            },
           });
-          that.set_play_list();
         }
       },
     });
@@ -2366,12 +2432,14 @@ Page({
             wx.setStorage({
               key: "cached_audio_ids",
               data: ids,
-            });
-            wx.showToast({
-              title: "删除成功",
-            });
-            that.setData({
-              downloaded: false,
+              success: function () {
+                wx.showToast({
+                  title: "删除成功",
+                });
+                that.setData({
+                  downloaded: false,
+                });
+              },
             });
           }
         }

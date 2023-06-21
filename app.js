@@ -1,6 +1,11 @@
 import { config } from "./config";
 import { cache_seek2 } from "./utils/util";
 
+wx.setInnerAudioOption({
+  obeyMuteSwitch: false,
+  mixWithOther: true,
+});
+
 App({
   get_api_version: function () {
     return this.globalData.api_version;
@@ -9,7 +14,7 @@ App({
     show_ad: true,
     fti: false,
     play_mode: "one",
-    api_version: new Date().getTime(),
+    api_version: 20230619,
   },
   onHide() {},
   onShow() {},
@@ -38,11 +43,7 @@ App({
       url: config.service.host + "/version",
       enableHttp2: true,
       success: function (data) {
-        that.globalData.api_version = data.data.v + "";
-        wx.setStorage({
-          key: "api_version",
-          data: data.data.v + "",
-        });
+        that.globalData.api_version = data.data.v;
         wx.setStorage({
           key: "sign_audio",
           data: data.data.s + "",

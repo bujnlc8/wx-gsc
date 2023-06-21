@@ -31,7 +31,7 @@
 }
 
 .indent {
-  text-align: left;
+  /* text-align: left; */
 }
 
 .center {
@@ -41,14 +41,14 @@
 .title {
   font-size: 17px;
   text-align: center;
-  margin-top: 0.1em;
+  margin-top: 2px;
   cursor: pointer;
 }
 
 .author {
   font-size: 17px;
   text-align: center;
-  margin-top: 8px;
+  margin-top: 5px;
   cursor: pointer;
 }
 
@@ -127,7 +127,7 @@
 }
 
 #item1 {
-  margin-top: 26px;
+  margin-top: 25px;
 }
 
 .no_scroll {
@@ -187,4 +187,7 @@
   position: fixed;
   z-index: 1003;
   background-color: #00000080;
+}
+.foreward {
+  text-align: justify;
 }

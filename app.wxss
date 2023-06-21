@@ -17,6 +17,7 @@ page {
   -webkit-tap-highlight-color: #00000000;
   font: 14px/1.5 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
     "WenQuanYi Micro Hei", "Helvetica Neue", Arial, sans-serif;
+  text-align: justify;
 }
 
 .hl {

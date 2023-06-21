@@ -192,4 +192,5 @@ export {
   wx_search_confirm,
   wx_search_clear,
   wx_search,
+  wx_search_add_his_key,
 };

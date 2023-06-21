@@ -16,6 +16,7 @@ import {
   wx_search_confirm,
   wx_search_clear,
   wx_search,
+  wx_search_add_his_key,
 } from "../search/search";
 
 const wechat_si = requirePlugin("WechatSI");
@@ -41,6 +42,7 @@ Page({
     fti: app.globalData.fti,
     recording: false,
     show_ad: app.globalData.show_ad,
+    api_version: app.globalData.api_version,
   },
   getcurrent_paly_id: function () {
     var that = this;
@@ -191,18 +193,20 @@ Page({
       key: "search_result_ids",
       data: search_result_ids,
     });
-    // var old_audio_ids = wx.getStorageSync("audio_ids_playlist");
-    // if (!old_audio_ids || old_audio_ids["audio_ids"].length == 0) {
-    //   if (audio_ids.length > 0) {
-    //     wx.setStorage({
-    //       key: "audio_ids_playlist",
-    //       data: {
-    //         audio_ids: audio_ids,
-    //         playlist: playlist,
-    //       },
-    //     });
-    //   }
-    // }
+    wx.getStorage({
+      key: "audio_ids_playlist",
+      fail: () => {
+        if (audio_ids.length > 0) {
+          wx.setStorage({
+            key: "audio_ids_playlist",
+            data: {
+              audio_ids: audio_ids,
+              playlist: playlist,
+            },
+          });
+        }
+      },
+    });
   },
   interval_get_current_play: function () {
     var that = this;
@@ -487,6 +491,7 @@ Page({
             wx.hideLoading();
           }
           that.set_scroll_height();
+          wx_search_add_his_key(value);
         },
         fail: () => {
           wx.showToast({
@@ -532,6 +537,7 @@ Page({
     var not_equal = fti != that.data.fti;
     that.setData({
       fti: fti,
+      api_version: app.globalData.api_version,
     });
     if (not_equal) {
       if (!that.search_v && that.data.page == "main") {
@@ -548,20 +554,20 @@ Page({
       }
     }
     var hot = [
+      "庾信",
       "杜甫",
-      "白居易",
       "苏轼",
       "姜夔",
-      "庾信",
       "水调歌头",
+      "蝶恋花",
       "少年游",
       "永遇乐",
-      "蝶恋花",
       "与陈伯之书",
+      "报任安书",
       "讨武曌檄",
       "滕王阁序",
-      "洛神赋",
       "哀江南赋",
+      "洛神赋",
       "枯树赋",
       "芜城赋",
     ];
@@ -633,18 +639,22 @@ Page({
     ];
     if (fti) {
       hot = [
+        "庾信",
         "杜甫",
-        "白居易",
         "蘇軾",
         "姜夔",
         "水調歌頭",
+        "蝶戀花",
         "少年遊",
         "永遇樂",
-        "蝶戀花",
         "與陳伯之書",
+        "報任安書",
+        "討武曌檄",
         "滕王閣序",
+        "哀江南賦",
         "洛神賦",
-        "纖手破新橙",
+        "枯樹賦",
+        "蕪城賦",
       ];
       mind = [
         "宋祁",

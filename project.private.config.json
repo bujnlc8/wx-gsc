@@ -3,5 +3,6 @@
     "projectname": "i%E5%8F%A4%E8%AF%97%E8%AF%8D",
     "setting": {
         "compileHotReLoad": true
-    }
+    },
+    "libVersion": "2.32.2"
 }

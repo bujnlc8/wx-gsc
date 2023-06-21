@@ -9,9 +9,9 @@
         {{work_item.work_dynasty}} · {{work_item.work_author}}
     </view>
     <view wx:if="{{work_item.content.length>=200}}">
-        <view style='display:flex;flex-direction:row;margin-top:8px;' wx:if="{{work_item.audio_id > 0 && !folding}}">
+        <view style='display:flex;flex-direction:row;margin-top:5px;' wx:if="{{work_item.audio_id > 0 && !folding}}">
             <view style='flex:40;text-align:right;'>
-                <navigator redirect url='/pages/catalog/catalog' style='display:inline-block;'>
+                <navigator open-type="reLaunch" url='/pages/catalog/catalog' style='display:inline-block;'>
                     <image src='../../static/home.png' class="operate_audio"></image>
                 </navigator>
                 <view bindtap="show_playlist" style='display:inline-block;'>
@@ -36,7 +36,7 @@
             <text style='font-size:9px;color:#7c4b00;opacity:0.8;float:left;margin-left:9px;' wx:if="{{current_time_show}}">{{current_time_show}}</text>
         </view>
     </view>
-    <view wx:if="{{work_item.foreword}}" class='foreward' style='margin-left:34px;margin-top:5px;text-indent: 2em;font-style: oblique;font-size: 13px;'>
+    <view wx:if="{{work_item.foreword}}" class='foreward' style='margin-left:51px;margin-top:5px;text-indent: 2em;font-size: 13px;margin-right: 51px;'>
         <view wx:if="{{!work_item.split_foreword || work_item.split_foreword.length == 0}}">
             <text selectable='true' decode="true" space='nbsp'>{{work_item.foreword}}</text>
         </view>
@@ -53,9 +53,9 @@
         </view>
     </view>
     <view wx:if="{{work_item.content.length < 200}}">
-        <view style='display:flex;flex-direction:row;margin-top:8px;' wx:if="{{work_item.audio_id>0 && !folding}}">
+        <view style='display:flex;flex-direction:row;margin-top:5px;' wx:if="{{work_item.audio_id>0 && !folding}}">
             <view style='flex:40;text-align:right;'>
-                <navigator redirect url='/pages/catalog/catalog' style='display:inline-block;'>
+                <navigator open-type="reLaunch" url='/pages/catalog/catalog' style='display:inline-block;'>
                     <image src='../../static/home.png' class="operate_audio"></image>
                 </navigator>
                 <view bindtap="show_playlist" style='display:inline-block;'>
@@ -109,7 +109,7 @@
             <image src='{{work_item.like==1 ? "../../static/liked.png":"../../static/like.png"}}' class='bottom_icons'></image>
         </view>
         <view class='translation' bindtouchstart="touch_start" bindtouchend="touch_end" data-currentab="{{current_tab}}">
-            <view style="margin-top: {{systemInfo.platform == 'android' ? 10: 5}}px;" wx:if="{{show_ad}}">
+            <view style="margin-top: {{systemInfo.platform == 'android' ? 10: 6}}px;" wx:if="{{show_ad}}">
                 <!-- <ad unit-id="adunit-bea78055788f8f67" ad-intervals="30" wx:if="{{current_tab == 0}}"></ad> -->
                 <!-- <ad unit-id="adunit-c97743fdab973952" ad-intervals="30" wx:if="{{current_tab == 1}}"></ad> -->
                 <!-- <ad unit-id="adunit-d8db1fc2ab085faa" ad-intervals="30" wx:if="{{current_tab == 2}}"></ad> -->

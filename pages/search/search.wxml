@@ -7,7 +7,7 @@
                 <input type="text" class="weui-search-bar__input" placeholder="{{ wx_search_data.value.length == 0 ? (fti ?'請輸入查詢內容': '请输入查询内容'): ''}}" placeholder-class="placeholder" value="{{wx_search_data.value}}" bindinput="wx_search_input" bindconfirm="wx_search_confirm" />
             </view>
             <view class="weui-icon-clear" wx:if="{{wx_search_data.value && wx_search_data.value.length > 0}}" bindtap="wx_search_clear">
-                <icon color="#c0c6c9" type="clear" size="16px" style="float: right;margin-right: 5px;margin-top: 8px;cursor: pointer;"></icon>
+                <icon color="#c0c6c9" type="clear" size="16px" style="float: right;margin-right: 5px;margin-top: 7px;cursor: pointer;"></icon>
             </view>
         </view>
         <view class="weui-search-bar__cancel-btn" bindtap="wx_search_confirm">
