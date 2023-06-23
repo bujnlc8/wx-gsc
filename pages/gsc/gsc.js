@@ -1,4 +1,9 @@
-import { config, background_audio_manager, systemInfo } from "../../config";
+import {
+  config,
+  background_audio_manager,
+  systemInfo,
+  inner_audio_context,
+} from "../../config";
 import {
   format_time,
   show_success,
@@ -11,7 +16,6 @@ import {
 } from "../../utils/util";
 const wechat_si = requirePlugin("WechatSI");
 const win_width = systemInfo.windowWidth;
-var inner_audio_context = null;
 const fs = wx.getFileSystemManager();
 const app = getApp();
 
@@ -364,6 +368,10 @@ Page({
             annotation_dict[tmp0] = tmp.slice(1).join("：");
             annotation_reserve_dict[tmp.slice(1).join("：")] = tmp[0];
           }
+          that.setData({
+            annotation_dict: annotation_dict,
+            annotation_reserve_dict: annotation_reserve_dict,
+          });
           var annotation_words = Object.keys(annotation_dict).filter(
             (item) => item && item.length > 0
           );
@@ -420,9 +428,7 @@ Page({
               (seek / background_audio_manager.duration) * 100
             );
           }
-          var time2close = wx.getStorageSync("time2close");
           that.setData({
-            time2close: time2close && time2close > 0 ? time2close : 0,
             work_item: work,
             audio_id: work.audio_id,
             current_work_item: work.work_title + "-" + work.work_author,
@@ -442,23 +448,30 @@ Page({
               detail: "",
             },
             downloaded: that.is_audio_cached(work.id),
-            annotation_dict: annotation_dict,
-            annotation_reserve_dict: annotation_reserve_dict,
           });
           that.get_play_mode();
-          if (time2close && time2close > 0) {
-            var last_micro_seconds = time2close - new Date().getTime() / 1000;
-            if (last_micro_seconds > 0) {
-              that.setData({
-                close_play_time: Math.ceil(last_micro_seconds / 60.0),
-              });
-            } else {
-              that.setData({
-                time2close: 0,
-                close_play_time: "",
-              });
-            }
-          }
+          wx.getStorage({
+            key: "time2close",
+            success: (res) => {
+              var time2close = res.data;
+              time2close = time2close && time2close > 0 ? time2close : 0;
+              if (time2close && time2close > 0) {
+                var last_micro_seconds =
+                  time2close - new Date().getTime() / 1000;
+                if (last_micro_seconds > 0) {
+                  that.setData({
+                    time2close: time2close,
+                    close_play_time: Math.ceil(last_micro_seconds / 60.0),
+                  });
+                } else {
+                  that.setData({
+                    time2close: 0,
+                    close_play_time: "",
+                  });
+                }
+              }
+            },
+          });
           if (!play) {
             wx.hideLoading();
           }
@@ -638,7 +651,7 @@ Page({
           //inner_audio_context.stop()
           if (that.data.seek3.work_id == work_id) {
             inner_audio_context.src = urls[that.data.seek3.index];
-            inner_audio_context._start_index = that.data.seek3.index;
+            inner_audio_context.my_start_index = that.data.seek3.index;
             // 安卓trick
             if (systemInfo.platform == "android") {
               inner_audio_context.play();
@@ -647,10 +660,9 @@ Page({
             inner_audio_context.seek(that.data.seek3.seek);
           } else {
             inner_audio_context.src = urls[0];
-            inner_audio_context._start_index = 0;
+            inner_audio_context.my_start_index = 0;
           }
-          inner_audio_context._work_id = work_id;
-          inner_audio_context.playbackRate = 0.8;
+          inner_audio_context.my_work_id = work_id;
           inner_audio_context.play();
           wx.setStorage({
             key: "speak_audio:" + work_id,
@@ -684,7 +696,7 @@ Page({
         });
         if (this.data.seek3.work_id == work_item.id) {
           inner_audio_context.src = data.urls[this.data.seek3.index];
-          inner_audio_context._start_index = this.data.seek3.index;
+          inner_audio_context.my_start_index = this.data.seek3.index;
           // 安卓跳转失败, it's just a trick
           if (systemInfo.platform == "android") {
             inner_audio_context.play();
@@ -693,10 +705,9 @@ Page({
           inner_audio_context.seek(this.data.seek3.seek);
         } else {
           inner_audio_context.src = data.urls[0];
-          inner_audio_context._start_index = 0;
+          inner_audio_context.my_start_index = 0;
         }
-        inner_audio_context._work_id = work_item.id;
-        inner_audio_context.playbackRate = 0.8;
+        inner_audio_context.my_work_id = work_item.id;
         inner_audio_context.play();
         return;
       }
@@ -717,12 +728,10 @@ Page({
   speak: function (e) {
     var speeching = e.currentTarget.dataset.speeching;
     if (speeching) {
-      if (inner_audio_context) {
-        inner_audio_context.pause();
-        this.setData({
-          speeching: false,
-        });
-      }
+      inner_audio_context.pause();
+      this.setData({
+        speeching: false,
+      });
     } else {
       this.pause_play_back_audio();
       this.do_speak(this.data.work_item);
@@ -1397,12 +1406,10 @@ Page({
     );
     background_audio_manager.src = audio_url;
     background_audio_manager.my_audio_id = audio_id;
-    if (inner_audio_context) {
-      inner_audio_context.pause();
-      that.setData({
-        speeching: false,
-      });
-    }
+    inner_audio_context.pause();
+    that.setData({
+      speeching: false,
+    });
     if (that.data.seek2.seek > 0 && that.data.seek2.audio_id == audio_id) {
       background_audio_manager.startTime = that.data.seek2.seek;
       that.setData({
@@ -1425,7 +1432,7 @@ Page({
       background_audio_manager.stop();
       setTimeout(() => {
         background_audio_manager.play();
-      }, 1000);
+      }, 500);
     }
     that.setData({
       playing: true,
@@ -1525,12 +1532,10 @@ Page({
       wx.hideLoading();
     });
     background_audio_manager.onPlay(() => {
-      if (inner_audio_context) {
-        inner_audio_context.pause();
-        that.setData({
-          speeching: false,
-        });
-      }
+      inner_audio_context.pause();
+      that.setData({
+        speeching: false,
+      });
       that.setData({
         playing: true,
         playing_audio_id: background_audio_manager.my_audio_id,
@@ -1549,6 +1554,11 @@ Page({
     });
   },
   listen_speeching: function () {
+    inner_audio_context.offEnded();
+    inner_audio_context.offPlay();
+    inner_audio_context.offPause();
+    inner_audio_context.offStop();
+    inner_audio_context.offTimeUpdate();
     var that = this;
     inner_audio_context.onPlay(() => {
       that.pause_play_back_audio();
@@ -1560,8 +1570,8 @@ Page({
       that.setData({
         speeching: false,
         seek3: {
-          work_id: inner_audio_context._work_id,
-          index: inner_audio_context._start_index,
+          work_id: inner_audio_context.my_work_id,
+          index: inner_audio_context.my_start_index,
           seek: inner_audio_context.currentTime,
         },
       });
@@ -1570,22 +1580,20 @@ Page({
       that.setData({
         speeching: false,
       });
-      inner_audio_context.destroy();
     });
     inner_audio_context.onEnded(() => {
       if (
-        inner_audio_context._start_index ==
+        inner_audio_context.my_start_index ==
         that.data.speeching_urls.length - 1
       ) {
         var url = that.data.speeching_urls[0];
-        inner_audio_context._start_index = 0;
+        inner_audio_context.my_start_index = 0;
       } else {
         var url =
-          that.data.speeching_urls[inner_audio_context._start_index + 1];
-        inner_audio_context._start_index += 1;
+          that.data.speeching_urls[inner_audio_context.my_start_index + 1];
+        inner_audio_context.my_start_index += 1;
       }
       inner_audio_context.src = url;
-      inner_audio_context.playbackRate = 0.8;
       inner_audio_context.play();
     });
     inner_audio_context.onTimeUpdate(() => {
@@ -1597,7 +1605,6 @@ Page({
       that.setData({
         speeching: false,
       });
-      inner_audio_context.destroy();
     });
   },
   onReady: function () {
@@ -1608,11 +1615,8 @@ Page({
         clearInterval(id_);
       }
     }, 500);
-    inner_audio_context = wx.createInnerAudioContext();
-    inner_audio_context._start_index = 0;
-    inner_audio_context.loop = false;
-    inner_audio_context.playbackRate = 0.8;
-    inner_audio_context.referrerPolicy = "origin";
+    inner_audio_context.my_start_index = 0;
+    inner_audio_context.my_work_id = 0;
     that.listen_speeching();
     that.listen_play();
   },
@@ -1642,7 +1646,7 @@ Page({
         that.set_current_playing();
         clearInterval(id_);
       }
-    }, 200);
+    }, 500);
   },
   onHide: function () {
     inner_audio_context.stop();

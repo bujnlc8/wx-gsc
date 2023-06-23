@@ -120,9 +120,10 @@ function wx_search(input_value) {
 
 function get_his_keys() {
   var value = [];
-  try {
-    value = wx.getStorageSync("wx_search_his_keys");
-    if (value) {
+  wx.getStorage({
+    key: "wx_search_his_keys",
+    success: (res) => {
+      value = res.data;
       var tem_data = __that.data.wx_search_data;
       tem_data.his = value.slice(0, 12);
       if (__that.data.fti) {
@@ -134,9 +135,8 @@ function get_his_keys() {
         wx_search_data: tem_data,
       });
       __that.set_scroll_height();
-    }
-  } catch (e) {}
-  __that.set_scroll_height();
+    },
+  });
 }
 
 function wx_search_add_his_key(input_value) {
@@ -144,29 +144,40 @@ function wx_search_add_his_key(input_value) {
     return;
   }
   input_value = simplized(input_value);
-  var value = wx.getStorageSync("wx_search_his_keys");
-  if (value) {
-    if (value.indexOf(input_value) < 0) {
-      value.unshift(input_value);
-    }
-    wx.setStorage({
-      key: "wx_search_his_keys",
-      data: value,
-      success: function () {
-        get_his_keys(__that);
-      },
-    });
-  } else {
-    value = [];
-    value.push(input_value);
-    wx.setStorage({
-      key: "wx_search_his_keys",
-      data: value,
-      success: function () {
-        get_his_keys(__that);
-      },
-    });
-  }
+  wx.getStorage({
+    key: "wx_search_his_keys",
+    success: (res) => {
+      var value = res.data;
+      var index = value.indexOf(input_value);
+      if (index < 0) {
+        value.unshift(input_value);
+      } else if (index > 0) {
+        value.splice(index, 1);
+        value.unshift(input_value);
+      }
+      wx.setStorage({
+        key: "wx_search_his_keys",
+        data: value,
+        success: function () {
+          get_his_keys(__that);
+        },
+      });
+    },
+    fail: (e) => {
+      if (e.errMsg.indexOf("data not found") == -1) {
+        return;
+      }
+      var value = [];
+      value.push(input_value);
+      wx.setStorage({
+        key: "wx_search_his_keys",
+        data: value,
+        success: function () {
+          get_his_keys(__that);
+        },
+      });
+    },
+  });
 }
 
 function wx_search_delete_all() {
