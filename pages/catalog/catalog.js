@@ -1,4 +1,4 @@
-import { config, background_audio_manager, systemInfo } from "../../config";
+import { config, systemInfo } from "../../config";
 import {
   format_time,
   show_success,
@@ -6,6 +6,8 @@ import {
   simplized,
   traditionalized,
   get_share_image,
+  get_background_audio_manager,
+  background_audio_manager as inner_background_audio_manager,
 } from "../../utils/util";
 
 import {
@@ -45,7 +47,11 @@ Page({
     api_version: app.globalData.api_version,
   },
   getcurrent_paly_id: function () {
+    if (!inner_background_audio_manager) {
+      return;
+    }
     var that = this;
+    var background_audio_manager = get_background_audio_manager();
     if (background_audio_manager && !background_audio_manager.paused) {
       if (background_audio_manager.src) {
         that.setData({
@@ -509,27 +515,25 @@ Page({
     var that = this;
     var screen_height = systemInfo.windowHeight;
     var sub_height =
-      systemInfo.platform == "ios" || systemInfo.page == "android" ? 35 : 5;
+      systemInfo.platform == "ios" || systemInfo.page == "android" ? 15 : 0;
     var query = wx.createSelectorQuery().in(this);
     query.select("#top_search").boundingClientRect();
     query.exec((res) => {
       if (res.length > 0 && res[0]) {
         that.setData({
           scroll_height: screen_height - res[0].height - sub_height,
-          scroll_top: res[0].height + 5,
+          scroll_top: res[0].height,
         });
       } else {
         that.setData({
           scroll_height: screen_height - sub_height,
-          scroll_top: res[0].height + 5,
+          scroll_top: res[0].height,
         });
       }
     });
   },
   onReady: function () {
-    var that = this;
     this.set_scroll_height();
-    that.interval_get_current_play();
   },
   onShow: function () {
     var that = this;

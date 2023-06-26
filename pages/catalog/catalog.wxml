@@ -12,13 +12,13 @@
         </view>
         <view style="margin-top:2px;;font-size:10px;" catchlongpress="switch_page">{{fti ? '搜索結果': '搜索结果'}}({{total}})<label wx:if="{{show_bottom_button}}" style="float: right;">第<text style="color: #7c4b00;font-weight: 700;">{{page_num}}</text>/{{total_page}}{{fti? '頁': '页'}}</label></view>
     </view>
-    <scroll-view scroll-y="true" style="height: {{scroll_height}}px;margin-top: {{scroll_top}}px;" bindscroll="scroll" scroll-into-view="{{to_top}}" scroll-with-animation="true" enable-back-to-top="true" enhanced="true" show-scrollbar="false">
+    <scroll-view scroll-y="{{true}}" style="height: {{scroll_height}}px;margin-top: {{scroll_top}}px;" bindscroll="scroll" scroll-into-view="{{to_top}}" scroll-with-animation="{{true}}" enable-back-to-top="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
         <view wx:for="{{gscitems}}" wx:key="id">
             <view class='item_work' id="work_item{{index+1}}">
                 <view bindtap='go2detail' data-words='{{item.split_words}}' data-id_='{{item.id}}' style='position:relative;cursor: pointer;'>
                     <text wx:if="{{!item.split_title || item.split_title.length == 0}}" class='title' style="{{current_paly_id==item.id?'color:#7c4b00;font-weight:700;':''}}">{{item.work_title}}</text>
                     <view wx:if="{{item.split_title && item.split_title.length > 0}}" class='title' style="{{current_paly_id==item.id?'color:#7c4b00;font-weight:700;':''}}">
-                        <text class="{{item.k?'hl':''}}" wx:for="{{item.split_title}}" decode="true" space='nbsp' selectable="true">{{item.s}}</text>
+                        <text class="{{item.k?'hl':''}}" wx:for="{{item.split_title}}" decode="{{true}}" space='nbsp' selectable="{{true}}">{{item.s}}</text>
                     </view>
                     <view wx:if="{{item.audio_id>0}}" style='position:absolute;top:2px;right:5px;'>
                         <image src="{{current_paly_id == item.id ? '../../static/sounding.png': '../../static/sound.png'}}" style='width:12px;height:12px;'></image>
@@ -26,7 +26,7 @@
                     <view style="cursor: pointer;display: flex;">
                         <text wx:if="{{!item.split_content || item.split_content.length == 0}}" data-id_='{{item.id}}' class="content_text" style="{{current_paly_id==item.id ? 'color:#7c4b00;font-weight:700;' :''}}">{{item.short_content}}</text>
                         <view wx:if="{{item.split_content && item.split_content.length > 0}}" data-id_='{{item.id}}' class="content_text" style="{{current_paly_id==item.id?'color:#7c4b00;font-weight:700;':''}}">
-                            <text class="{{item.k?'hl':''}}" wx:for="{{item.split_content}}" selectable="true" decode="true" space='nbsp'>{{item.s}}</text>
+                            <text class="{{item.k?'hl':''}}" wx:for="{{item.split_content}}" selectable="{{true}}" decode="{{true}}" space='nbsp'>{{item.s}}</text>
                         </view>
                         <text class='author' style="{{current_paly_id==item.id?'color:#7c4b00;font-weight:700;':''}}">{{item.work_dynasty}}·{{item.work_author}}</text>
                     </view>

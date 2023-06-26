@@ -1,9 +1,4 @@
-import {
-  config,
-  background_audio_manager,
-  systemInfo,
-  inner_audio_context,
-} from "../../config";
+import { config, systemInfo } from "../../config";
 import {
   format_time,
   show_success,
@@ -13,11 +8,14 @@ import {
   traditionalized,
   cache_seek2,
   get_share_image,
+  get_background_audio_manager,
+  get_inner_audio_context,
 } from "../../utils/util";
 const wechat_si = requirePlugin("WechatSI");
 const win_width = systemInfo.windowWidth;
 const fs = wx.getFileSystemManager();
 const app = getApp();
+var inner_audio_context = get_inner_audio_context();
 
 Page({
   data: {
@@ -75,6 +73,8 @@ Page({
     play_mode: app.globalData.play_mode,
     downloaded: false,
     systemInfo: systemInfo,
+    refresher_triggered: false,
+    scrollHeight: systemInfo.windowHeight - 10,
   },
   set_timed: function () {
     var that = this;
@@ -97,6 +97,7 @@ Page({
             seconds = 600;
             break;
           case 4:
+            var background_audio_manager = get_background_audio_manager();
             var currentTime = background_audio_manager.currentTime;
             seconds =
               background_audio_manager.duration -
@@ -231,6 +232,7 @@ Page({
     //xunhuan->one->shuffle->xunhuan
     var that = this;
     var play_mode = "xunhuan";
+    var background_audio_manager = get_background_audio_manager();
     if (this.data.play_mode == "xunhuan") {
       this.setData({
         play_mode: "one",
@@ -422,6 +424,7 @@ Page({
           }
           var slide_value = 0;
           var seek = 0;
+          var background_audio_manager = get_background_audio_manager();
           if (background_audio_manager.my_audio_id == work.audio_id) {
             seek = background_audio_manager.currentTime;
             slide_value = parseInt(
@@ -475,7 +478,14 @@ Page({
           if (!play) {
             wx.hideLoading();
           }
-          if (play && work.audio_id > 0) {
+          if (
+            play &&
+            work.audio_id > 0 &&
+            !(
+              that.data.playing_audio_id === work.audio_id &&
+              !background_audio_manager.paused
+            )
+          ) {
             that.setData({
               seek2: {
                 seek: 0,
@@ -591,6 +601,7 @@ Page({
     var play_id = 1;
     var index = -1;
     if (mode == "xunhuan") {
+      var background_audio_manager = get_background_audio_manager();
       if (background_audio_manager.my_audio_id) {
         index = audio_ids.indexOf(background_audio_manager.my_audio_id);
       }
@@ -842,6 +853,7 @@ Page({
     });
   },
   pause_play_back_audio: function () {
+    var background_audio_manager = get_background_audio_manager();
     background_audio_manager.pause();
     var currentTime = 0;
     if (
@@ -884,6 +896,7 @@ Page({
     }
   },
   record_play: function (id_, title) {
+    var background_audio_manager = get_background_audio_manager();
     setTimeout(() => {
       if (!background_audio_manager.paused) {
         this._record_play(id_, title);
@@ -1041,30 +1054,43 @@ Page({
       this._change_content(current_tab, "left");
     }
   },
-  onPullDownRefresh: function () {
+  onPullDownRefresher: function () {
+    var that = this;
     wx.showNavigationBarLoading();
-    var key = 0;
-    var search_result_ids = wx.getStorageSync("search_result_ids");
-    if (search_result_ids) {
-      var index = search_result_ids.indexOf(this.data.work_item.id);
-      if (index != -1) {
-        index += 1;
-        if (index >= search_result_ids.length) {
-          index = 0;
+    that.setData({
+      refresher_triggered: true,
+    });
+    wx.getStorage({
+      key: "search_result_ids",
+      success: (res) => {
+        var search_result_ids = res.data;
+        var index = search_result_ids.indexOf(this.data.work_item.id);
+        if (index != -1) {
+          index += 1;
+          if (index >= search_result_ids.length) {
+            index = 0;
+          }
+          var key = search_result_ids[index];
+          that.get_by_id(key, false);
+        } else {
+          var key = search_result_ids[0];
+          that.get_by_id(key, false);
         }
-        key = search_result_ids[index];
-      }
-    }
-    if (key == 0) {
-      key = this.data.work_item.id + 1;
-      if (key > 297) {
-        key = 1;
-      }
-    }
-    this.get_by_id(key, false);
+      },
+      fail: (e) => {
+        var key = that.data.work_item.id + 1;
+        if (key > 297) {
+          key = 1;
+        }
+        that.get_by_id(key, false);
+      },
+    });
     setTimeout(() => {
       wx.hideNavigationBarLoading();
-      wx.stopPullDownRefresh();
+      this.setData({
+        refresher_triggered: false,
+        scrollHeight: systemInfo.windowHeight - 10,
+      });
     }, 600);
     inner_audio_context.stop();
   },
@@ -1220,7 +1246,11 @@ Page({
       return;
     }
     if (
-      !(systemInfo.platform == "ios" || systemInfo.platform == "android") ||
+      !(
+        systemInfo.platform == "ios" ||
+        systemInfo.platform == "android" ||
+        systemInfo.platform == "devtools"
+      ) ||
       !app.globalData.show_ad
     ) {
       that.do_download_audio(work_id);
@@ -1229,13 +1259,19 @@ Page({
     // 在页面中定义激励视频广告
     let videoAd = null;
     var havedown = false;
+    wx.showLoading({
+      title: "预加载中...",
+    });
     // 在页面onLoad回调事件中创建激励视频广告实例
     if (wx.createRewardedVideoAd) {
       videoAd = wx.createRewardedVideoAd({
         adUnitId: "adunit-bf926c50f4a5f916",
       });
-      videoAd.onLoad(() => {});
+      videoAd.onLoad(() => {
+        wx.hideLoading();
+      });
       videoAd.onError((err) => {
+        wx.hideLoading();
         console.log("onError");
       });
       videoAd.onClose((res) => {
@@ -1244,6 +1280,8 @@ Page({
           that.do_download_audio(work_id);
         }
       });
+    } else {
+      wx.hideLoading();
     }
     // 用户触发广告后，显示激励视频广告
     if (videoAd) {
@@ -1397,6 +1435,7 @@ Page({
     if (that.data.fti) {
       title = "i古詩詞";
     }
+    var background_audio_manager = get_background_audio_manager();
     background_audio_manager.epname = " " + title + " ";
     background_audio_manager.title = work_title;
     background_audio_manager.singer = work_author;
@@ -1461,6 +1500,7 @@ Page({
   },
   listen_play: function () {
     var that = this;
+    var background_audio_manager = get_background_audio_manager();
     background_audio_manager.onEnded(() => {
       that.setData({
         seek2: {
@@ -1621,6 +1661,7 @@ Page({
     that.listen_play();
   },
   set_current_playing: function () {
+    var background_audio_manager = get_background_audio_manager();
     if (background_audio_manager && !background_audio_manager.paused) {
       if (background_audio_manager.src) {
         this.setData({
@@ -1640,6 +1681,7 @@ Page({
     that.setData({
       fti: app.globalData.fti,
       play_mode: app.globalData.play_mode,
+      scrollHeight: systemInfo.windowHeight - 10,
     });
     var id_ = setInterval(() => {
       if (that.data.work_item) {
@@ -1779,6 +1821,7 @@ Page({
         }
       }
     } catch (e) {}
+    var background_audio_manager = get_background_audio_manager();
     var current_time = background_audio_manager.currentTime;
     var duration = background_audio_manager.duration;
     if (
@@ -1879,10 +1922,7 @@ Page({
       sliding: 2,
     });
   },
-  onPageScroll: function () {
-    if (new Date().getTime() % 2 != 0) {
-      return;
-    }
+  onPageScroller: function () {
     var that = this;
     var query = wx.createSelectorQuery().in(this);
     query.select("#location_id").boundingClientRect();
@@ -1988,6 +2028,7 @@ Page({
     this.get_by_id(this.data.work_item.id);
   },
   set_play_list: function (toast = false) {
+    var background_audio_manager = get_background_audio_manager();
     var that = this;
     var data = wx.getStorageSync("audio_ids_playlist");
     if (!data) {

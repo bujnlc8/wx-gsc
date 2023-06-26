@@ -1,5 +1,3 @@
-import { background_audio_manager } from "../config";
-
 const format_time = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -285,6 +283,7 @@ function simplized(cc) {
 
 function cache_seek2() {
   // 缓存上次播放的进度
+  var background_audio_manager = get_background_audio_manager();
   if (
     background_audio_manager &&
     background_audio_manager.my_audio_id &&
@@ -311,6 +310,31 @@ function get_share_image() {
   return "/static/share2.jpg";
 }
 
+var background_audio_manager = null;
+var inner_audio_context = null;
+
+function get_background_audio_manager() {
+  if (!background_audio_manager) {
+    console.log("init background_audio_manager...");
+    background_audio_manager = wx.getBackgroundAudioManager();
+    background_audio_manager.referrerPolicy = "origin";
+  }
+  return background_audio_manager;
+}
+
+function get_inner_audio_context() {
+  if (!inner_audio_context) {
+    console.log("init inner_audio_context...");
+    inner_audio_context = wx.createInnerAudioContext();
+    inner_audio_context.playbackRate = 0.7;
+    inner_audio_context.loop = false;
+    inner_audio_context.referrerPolicy = "origin";
+    inner_audio_context.my_start_index = 0;
+    inner_audio_context.my_work_id = 0;
+  }
+  return inner_audio_context;
+}
+
 export {
   format_time,
   show_success,
@@ -321,4 +345,7 @@ export {
   traditionalized,
   cache_seek2,
   get_share_image,
+  get_background_audio_manager,
+  get_inner_audio_context,
+  background_audio_manager,
 };

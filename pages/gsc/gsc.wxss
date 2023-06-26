@@ -30,10 +30,6 @@
   font-weight: bolder;
 }
 
-.indent {
-  /* text-align: left; */
-}
-
 .center {
   text-align: center;
 }
@@ -65,7 +61,6 @@
 }
 
 .gsc {
-  min-height: 100%;
   padding-left: 18px;
   padding-right: 18px;
 }
@@ -131,7 +126,6 @@
 }
 
 .no_scroll {
-  height: 100vh;
   overflow: hidden;
 }
 

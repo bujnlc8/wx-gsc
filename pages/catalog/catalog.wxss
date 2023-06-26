@@ -13,6 +13,8 @@
   padding-left: 9px;
   padding-right: 9px;
   padding-bottom: 10px;
+  height: 100%;
+  overflow-y: hidden;
 }
 
 .content_text {
@@ -68,4 +70,5 @@
 
 #top_search {
   width: calc(100% - 19px);
+  z-index: 10009;
 }

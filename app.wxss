@@ -22,12 +22,13 @@ page {
 
 .hl {
   color: #a61b29 !important;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 ::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  width: 0 !important;
+  height: 0 !important;
   color: transparent;
   display: none;
+  -webkit-appearance: none;
 }
