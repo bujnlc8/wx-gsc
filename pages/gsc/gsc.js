@@ -17,6 +17,8 @@ const fs = wx.getFileSystemManager();
 const app = getApp();
 var inner_audio_context = get_inner_audio_context();
 
+let videoAd = null;
+
 Page({
   data: {
     work_item: null,
@@ -75,6 +77,7 @@ Page({
     systemInfo: systemInfo,
     refresher_triggered: false,
     scrollHeight: systemInfo.windowHeight - 10,
+    time2end: false,
   },
   set_timed: function () {
     var that = this;
@@ -180,11 +183,14 @@ Page({
                 time2closeS == 0 ||
                 new Date().getTime() >= (time2close + 3) * 1000
               ) {
-                that.pause_play_back_audio();
                 that.setData({
                   time2close: 0,
                   close_play_time: "",
+                  time2end: true,
                 });
+                setTimeout(() => {
+                  that.pause_play_back_audio();
+                }, 300);
                 wx.showToast({
                   title: that.data.fti ? "定時已到^_^" : "定时已到^_^",
                   icon: "none",
@@ -642,6 +648,9 @@ Page({
     }, 3000);
   },
   operate_play: function (e) {
+    this.setData({
+      time2end: false,
+    });
     this.do_operate_play(e.currentTarget.dataset.key, this.get_play_mode());
   },
   _do_speak: function (s, start, urls, work_id) {
@@ -883,13 +892,28 @@ Page({
     ) {
       that.pause_play_back_audio();
     } else {
-      that.play_sound(
-        that.data.work_item.work_title,
-        that.data.work_item.work_author,
-        that.data.work_item.id,
-        that.data.work_item.audio_id,
-        that.data.work_item.content.length
-      );
+      that.setData({
+        time2end: false,
+      });
+      if (that.data.systemInfo.platform == "mac") {
+        setTimeout(() => {
+          that.play_sound(
+            that.data.work_item.work_title,
+            that.data.work_item.work_author,
+            that.data.work_item.id,
+            that.data.work_item.audio_id,
+            that.data.work_item.content.length
+          );
+        }, 2000);
+      } else {
+        that.play_sound(
+          that.data.work_item.work_title,
+          that.data.work_item.work_author,
+          that.data.work_item.id,
+          that.data.work_item.audio_id,
+          that.data.work_item.content.length
+        );
+      }
       setTimeout(() => {
         that.set_play_list();
       }, 3000);
@@ -1159,6 +1183,23 @@ Page({
         }
       },
     });
+    if (wx.createRewardedVideoAd) {
+      videoAd = wx.createRewardedVideoAd({
+        adUnitId: "adunit-bf926c50f4a5f916",
+      });
+      videoAd.onLoad(() => {
+        console.log("ad onload");
+      });
+      videoAd.onError((err) => {
+        console.log("ad onError");
+      });
+      videoAd.onClose((res) => {
+        if (res && res.isEnded) {
+          that.do_download_audio(that.data.work_item.id);
+          console.log(that.data.work_item.id);
+        }
+      });
+    }
   },
   do_download_audio: function (work_id) {
     var that = this;
@@ -1199,9 +1240,14 @@ Page({
                   });
                 },
                 fail: function (e) {
-                  if (e.errCode == 1300202) {
+                  if (
+                    e.errCode == 1300202 ||
+                    e.errMsg.indexOf(
+                      "saveFile:fail exceeded the maximum size of the file storage limit"
+                    ) != -1
+                  ) {
                     wx.showToast({
-                      title: "缓存文件已满",
+                      title: "缓存文件已满，清除中...",
                       icon: "none",
                     });
                     that.remove_cached_audio();
@@ -1257,44 +1303,37 @@ Page({
       return;
     }
     // 在页面中定义激励视频广告
-    let videoAd = null;
-    var havedown = false;
     wx.showLoading({
       title: "预加载中...",
     });
-    // 在页面onLoad回调事件中创建激励视频广告实例
-    if (wx.createRewardedVideoAd) {
-      videoAd = wx.createRewardedVideoAd({
-        adUnitId: "adunit-bf926c50f4a5f916",
-      });
-      videoAd.onLoad(() => {
-        wx.hideLoading();
-      });
-      videoAd.onError((err) => {
-        wx.hideLoading();
-        console.log("onError");
-      });
-      videoAd.onClose((res) => {
-        if (res && res.isEnded && !havedown) {
-          havedown = true;
-          that.do_download_audio(work_id);
-        }
-      });
-    } else {
-      wx.hideLoading();
-    }
     // 用户触发广告后，显示激励视频广告
     if (videoAd) {
-      videoAd.show().catch(() => {
-        // 失败重试
-        videoAd
-          .load()
-          .then(() => videoAd.show())
-          .catch((err) => {
-            havedown = true;
-            that.do_download_audio(work_id);
-          });
-      });
+      videoAd
+        .show()
+        .then(() => {
+          wx.hideLoading();
+        })
+        .catch(() => {
+          // 失败重试
+          videoAd
+            .load()
+            .then(() =>
+              videoAd
+                .show()
+                .then(() => {
+                  wx.hideLoading();
+                })
+                .catch(() => {
+                  wx.hideLoading();
+                  that.do_download_audio(that.data.work_item.id);
+                })
+            )
+            .catch((err) => {
+              console.log(err);
+              wx.hideLoading();
+              that.do_download_audio(that.data.work_item.id);
+            });
+        });
     }
   },
   play_sound: function (
@@ -1502,6 +1541,9 @@ Page({
     var that = this;
     var background_audio_manager = get_background_audio_manager();
     background_audio_manager.onEnded(() => {
+      if (that.data.time2end) {
+        return;
+      }
       that.setData({
         seek2: {
           audio_id: 0,
@@ -1776,11 +1818,14 @@ Page({
         time2close > 0 &&
         new Date().getTime() > (time2close + 3) * 1000
       ) {
-        that.pause_play_back_audio();
         that.setData({
           time2close: 0,
           close_play_time: "",
+          time2end: true,
         });
+        setTimeout(() => {
+          that.pause_play_back_audio();
+        }, 300);
         try {
           var set_timed_int = wx.getStorageSync("set_timed_int");
           if (!set_timed_int) {
@@ -1797,7 +1842,7 @@ Page({
         });
         if (set_timed_int > 0) {
           wx.showToast({
-            title: that.data.fti ? "定時已到" : "定时已到^_^",
+            title: that.data.fti ? "定時已到^_^" : "定时已到^_^",
             icon: "none",
           });
           clearInterval(set_timed_int);
@@ -1872,6 +1917,7 @@ Page({
       });
       return;
     }
+    var background_audio_manager = get_background_audio_manager();
     var v = e.detail.value;
     var duration = that.data.duration;
     var seek2 = (v / 100) * duration;
@@ -1901,6 +1947,7 @@ Page({
       });
       return;
     }
+    var background_audio_manager = get_background_audio_manager();
     var v = e.detail.value;
     var duration = that.data.duration;
     var seek2 = (v / 100) * duration;

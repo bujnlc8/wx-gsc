@@ -32,8 +32,8 @@
                     </view>
                 </view>
                 <ad unit-id="adunit-02b9f5394800f920" ad-intervals="30" ad-type="video" ad-theme="white" wx:if="{{show_ad && index == 4}}"></ad>
-                <ad unit-id="adunit-5b9c98db7d2391a1" ad-intervals="30" wx:if="{{api_version != 20230619 && show_ad && index == 9}}"></ad>
-                <ad unit-id="adunit-df87e6a2e1d5ea50" ad-type="video" ad-theme="white" wx:if="{{ api_version != 20230619 && show_ad && index == 14}}"></ad>
+                <!-- <ad unit-id="adunit-5b9c98db7d2391a1" ad-intervals="30" wx:if="{{api_version != 20230619 && show_ad && index == 9}}"></ad>
+                <ad unit-id="adunit-df87e6a2e1d5ea50" ad-type="video" ad-theme="white" wx:if="{{ api_version != 20230619 && show_ad && index == 14}}"></ad> -->
                 <!-- <ad unit-id="adunit-c0e31b9cadf6102b" ad-intervals="30" wx:if="{{show_ad && index == 19}}"></ad> -->
                 <ad unit-id="adunit-df87e6a2e1d5ea50" ad-type="video" ad-theme="white" wx:if="{{show_ad && gscitems.length < 5 && index == (gscitems.length - 1)}}"></ad>
             </view>

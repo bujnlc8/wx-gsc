@@ -124,7 +124,7 @@
             </view>
         </view>
         <!--以下为注释-->
-        <view style="display: {{annotation_detail.show ? 'inherit': 'none'}};position: absolute;left: {{annotation_detail.left}}px;top: {{annotation_detail.top}}px;background-color: #f3f3f2; color:#392f41;border-radius: 10px;padding: 5px;border: 0.5px solid #a61b29; margin-right: 10px;cursor: pointer;font-size: 13px;z-index: 1002;" bindtap="close_anno">{{annotation_detail.detail}}</view>
+        <view style="display: {{annotation_detail.show ? 'inherit': 'none'}};position: absolute;left: {{annotation_detail.left}}px;top: {{annotation_detail.top}}px;background-color: #f3f3f2; color:#392f41;border-radius: 10px;padding: 5px;border: 0.5px solid #a61b29; margin-right: 10px;cursor: pointer;font-size: 13px;z-index: 1002;text-align: left;" bindtap="close_anno">{{annotation_detail.detail}}</view>
     </view>
 </scroll-view>
 <!--以下为折叠-->
