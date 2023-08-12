@@ -44,10 +44,6 @@ App({
       enableHttp2: true,
       success: function (data) {
         that.globalData.api_version = data.data.v;
-        wx.setStorage({
-          key: "sign_audio",
-          data: data.data.s + "",
-        });
       },
     });
     this.check_ad();

@@ -134,7 +134,7 @@
 <!--以下为播放列表界面-->
 <view wx:if="{{playlist.length > 0 && show_playlist_flag}}" class="playlist">
     <view class="playlist_text">
-        <icon type="clear" style="float: right;margin-right: 8px;margin-top: 5px;cursor: pointer;" color="#c0c6c9" size="16px" catchtap="show_playlist"></icon>
+        <icon type="clear" style="float: right;margin-right: 8px;margin-top: 6px;cursor: pointer;" color="#c0c6c9" size="16px" catchtap="show_playlist"></icon>
         <text style="display: inline-block;line-height:26px;height: 16px;">播放列表({{playlist.length}})</text>
         <image src="../../static/rubbish.png" style='width:16px;height:16px;float: right;margin-top: 5px;margin-right: 25px;cursor: pointer;' catchtap="remove_all_playlist"></image>
     </view>

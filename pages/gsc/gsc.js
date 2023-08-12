@@ -1242,15 +1242,16 @@ Page({
                 fail: function (e) {
                   if (
                     e.errCode == 1300202 ||
-                    e.errMsg.indexOf(
-                      "saveFile:fail exceeded the maximum size of the file storage limit"
-                    ) != -1
+                    e.errMsg.indexOf("the maximum size") != -1
                   ) {
                     wx.showToast({
                       title: "缓存文件已满，清除中...",
                       icon: "none",
                     });
                     that.remove_cached_audio();
+                    setTimeout(() => {
+                      that.do_download_audio(work_id);
+                    }, 500);
                   } else {
                     wx.showToast({
                       title: e.errMsg,
@@ -1351,19 +1352,12 @@ Page({
       return;
     }
     var that = this;
-    var sign_audio = wx.getStorageSync("sign_audio");
     var cached_audio_file = that.is_audio_cached(work_id)
       ? that.make_cached_audio_path(work_id)
       : "";
-    if (cached_audio_file || sign_audio !== "1") {
+    if (cached_audio_file) {
       that._play_sound(
-        cached_audio_file
-          ? cached_audio_file
-          : config.qaudio_url +
-              audio_id +
-              ".m4a" +
-              "?t=" +
-              app.get_api_version(),
+        cached_audio_file,
         work_title,
         work_author,
         work_id,
@@ -1371,96 +1365,67 @@ Page({
       );
       return;
     }
-    wx.request({
-      url: config.service.host + "/gsc/audio_url",
-      enableHttp2: true,
-      data: {
-        filename: "/songci-audio/" + audio_id + ".m4a",
-      },
-      header: {
-        "content-type": "application/json",
-      },
-      method: "POST",
-      success: function (res) {
-        if (res.statusCode != 200 || res.data.code != 0) {
-          wx.showToast({
-            title: that.data.fti ? "獲取音頻失敗" : "获取音频失败",
-          });
-        } else {
-          wx.showLoading({
-            title: that.data.fti ? "音頻加載中..." : "音频加载中...",
-          });
-          var audio_url = res.data.data + "?t=" + app.get_api_version();
-          if (content_length <= 100) {
-            var dest_path = that.make_cached_audio_path(work_id);
-            wx.downloadFile({
-              url: audio_url,
-              success(res) {
-                fs.saveFile({
-                  tempFilePath: res.tempFilePath,
-                  filePath: dest_path,
-                  success: function () {
-                    wx.hideLoading();
-                    that.save_cache_audio_id(work_id);
-                    that.setData({
-                      downloaded: true,
-                    });
-                    that._play_sound(
-                      dest_path,
-                      work_title,
-                      work_author,
-                      work_id,
-                      audio_id
-                    );
-                  },
-                  fail: function (e) {
-                    wx.hideLoading();
-                    if (e.errCode == 1300202) {
-                      wx.showToast({
-                        title: "缓存文件已满",
-                        icon: "none",
-                      });
-                      that.remove_cached_audio();
-                    }
-                    that._play_sound(
-                      audio_url,
-                      work_title,
-                      work_author,
-                      work_id,
-                      audio_id
-                    );
-                  },
-                });
-              },
-              fail() {
-                wx.hideLoading();
-                that._play_sound(
-                  audio_url,
-                  work_title,
-                  work_author,
-                  work_id,
-                  audio_id
-                );
-              },
-            });
-          } else {
-            wx.hideLoading();
-            that._play_sound(
-              audio_url,
-              work_title,
-              work_author,
-              work_id,
-              audio_id
-            );
-          }
-        }
-      },
-      fail: function () {
-        wx.showToast({
-          title: that.data.fti ? "獲取音頻失敗" : "获取音频失败",
-        });
-      },
+    wx.showLoading({
+      title: that.data.fti ? "音頻加載中..." : "音频加载中...",
     });
+    var audio_url =
+      config.qaudio_url + audio_id + ".m4a" + "?t=" + app.get_api_version();
+    if (content_length <= 100) {
+      var dest_path = that.make_cached_audio_path(work_id);
+      wx.downloadFile({
+        url: audio_url,
+        success(res) {
+          fs.saveFile({
+            tempFilePath: res.tempFilePath,
+            filePath: dest_path,
+            success: function () {
+              wx.hideLoading();
+              that.save_cache_audio_id(work_id);
+              that.setData({
+                downloaded: true,
+              });
+              that._play_sound(
+                dest_path,
+                work_title,
+                work_author,
+                work_id,
+                audio_id
+              );
+            },
+            fail: function (e) {
+              wx.hideLoading();
+              if (e.errCode == 1300202) {
+                wx.showToast({
+                  title: "缓存文件已满",
+                  icon: "none",
+                });
+                that.remove_cached_audio();
+              }
+              that._play_sound(
+                audio_url,
+                work_title,
+                work_author,
+                work_id,
+                audio_id
+              );
+            },
+          });
+        },
+        fail() {
+          wx.hideLoading();
+          that._play_sound(
+            audio_url,
+            work_title,
+            work_author,
+            work_id,
+            audio_id
+          );
+        },
+      });
+    } else {
+      wx.hideLoading();
+      that._play_sound(audio_url, work_title, work_author, work_id, audio_id);
+    }
   },
   _play_sound: function (
     audio_url,
